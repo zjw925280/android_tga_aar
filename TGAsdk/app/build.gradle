@@ -64,7 +64,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:+'
     implementation 'com.google.android.gms:play-services-wallet:18.0.0'
     implementation 'com.android.billingclient:billing:2.2.1'
-    api 'com.tencent.tbs.tbssdk:sdk:43939'
+//    api 'com.tencent.tbs.tbssdk:sdk:43939'
 //    x5内核
     implementation files('libs\\x5code.jar')
     androidTestImplementation 'androidx.test:runner:1.2.0'
