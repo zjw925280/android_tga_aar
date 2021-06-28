@@ -22,74 +22,85 @@
 
 # This is a configuration file for ProGuard.
 # http://proguard.sourceforge.net/index.html#manual/usage.html
-
--dontusemixedcaseclassnames
--dontskipnonpubliclibraryclasses
+#
+#-dontusemixedcaseclassnames
+#-dontskipnonpubliclibraryclasses
+#-verbose
+## ignorewarnings
+#-ignorewarnings
+#
+## Optimization is turned off by default. Dex does not like code run
+## through the ProGuard optimize and preverify steps (and performs some
+## of these optimizations on its own).
+#-dontoptimize
+#-dontpreverify
+## Note that if you want to enable optimization, you cannot just
+## include optimization flags in your own project configuration file;
+## instead you will need to point to the
+## "proguard-android-optimize.txt" file instead of this one from your
+## project.properties file.
+#
+#-keepattributes *Annotation*
+#-keep public class com.google.vending.licensing.ILicensingService
+#-keep public class com.android.vending.licensing.ILicensingService
+#
+## For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
+#-keepclasseswithmembernames class * {
+#    native <methods>;
+#}
+#
+## keep setters in Views so that animations can still work.
+## see http://proguard.sourceforge.net/manual/examples.html#beans
+#-keepclassmembers public class * extends android.view.View {
+#  void set*(***);
+#  *** get*();
+#}
+#
+## We want to keep methods in Activity that could be used in the XML attribute onClick
+#-keepclassmembers class * extends android.app.Activity {
+#  public void *(android.view.View);
+#}
+#
+## For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
+#-keepclassmembers enum * {
+#    public static **[] values();
+#    public static ** valueOf(java.lang.String);
+#}
+#
+#-keep class * implements android.os.Parcelable {
+#  public static final android.os.Parcelable$Creator *;
+#}
+#
+#-keepclassmembers class **.R$* {
+#    public static <fields>;
+#}
+#
+## The support library contains references to newer platform versions.
+## Don't warn about those in case this app is linking against an older
+## platform version.  We know about them, and they are safe.
+#-dontwarn android.support.**
+#
+## -keep class android.support.v4.**{*;}
+#-keep class org.phprpc.**{*;}
+#-keep class com.google.gson.**{*;}
+#
+#-keep class com.baidu.**{*;}
+#-keep class com.novell.sasl.client.**{*;}
+#
+#-keep class org.**{*;}
+#-keep class com.hp.hpl.**{*;}
+#
+#-keep class net.sourceforge.**{*;}
+#
+#-keep class pinyindb.**{*;}
+#打印混淆信息
 -verbose
-# ignorewarnings
--ignorewarnings
-
-# Optimization is turned off by default. Dex does not like code run
-# through the ProGuard optimize and preverify steps (and performs some
-# of these optimizations on its own).
--dontoptimize
--dontpreverify
-# Note that if you want to enable optimization, you cannot just
-# include optimization flags in your own project configuration file;
-# instead you will need to point to the
-# "proguard-android-optimize.txt" file instead of this one from your
-# project.properties file.
-
+#代码优化选项，不加该行会将没有用到的类删除，这里为了验证时间结果而使用，在实际生产环境中可根据实际需要选择是否使用
+-dontshrink
+-dontwarn android.support.annotation.Keep
+#保留注解，如果不添加改行会导致我们的@Keep注解失效
 -keepattributes *Annotation*
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
-
-# For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
--keepclasseswithmembernames class * {
-    native <methods>;
+-keep @android.support.annotation.Keep class **{
+@android.support.annotation.Keep <fields>;  #不混淆变量
+@android.support.annotation.Keep <methods>; #不混淆方法
 }
-
-# keep setters in Views so that animations can still work.
-# see http://proguard.sourceforge.net/manual/examples.html#beans
--keepclassmembers public class * extends android.view.View {
-  void set*(***);
-  *** get*();
-}
-
-# We want to keep methods in Activity that could be used in the XML attribute onClick
--keepclassmembers class * extends android.app.Activity {
-  public void *(android.view.View);
-}
-
-# For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
-}
-
--keepclassmembers class **.R$* {
-    public static <fields>;
-}
-
-# The support library contains references to newer platform versions.
-# Don't warn about those in case this app is linking against an older
-# platform version.  We know about them, and they are safe.
--dontwarn android.support.**
-
-# -keep class android.support.v4.**{*;}
--keep class org.phprpc.**{*;}
--keep class com.google.gson.**{*;}
-
--keep class com.baidu.**{*;}
--keep class com.novell.sasl.client.**{*;}
-
--keep class org.**{*;}
--keep class com.hp.hpl.**{*;}
-
--keep class net.sourceforge.**{*;}
-
--keep class pinyindb.**{*;}
