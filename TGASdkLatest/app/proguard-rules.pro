@@ -166,8 +166,8 @@
 -keep public class sg.just4fun.tgasdk.tga.ui.my.fragment.MyFragment{*;}
 -keep public class sg.just4fun.tgasdk.conctart.*{*;}
 -keep public class sg.just4fun.tgasdk.modle.*{*;}
--keep public class sg.just4fun.tgasdk.tga.base.HttpBaseResult{*;}
 -keep public class sg.just4fun.tgasdk.tga.base.*{*;}
+-keep public class sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean{*;}
 
 
 -dontnote android.net.http.*
