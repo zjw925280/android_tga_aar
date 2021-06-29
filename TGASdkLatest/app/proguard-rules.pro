@@ -151,6 +151,7 @@
 -keep public class * extends android.support.annotation.**
 -keep public class sg.just4fun.tgasdk.callback.*{*;}
 -keep public class sg.just4fun.tgasdk.web*{*;}
+-keep public class sg.just4fun.tgasdk.web.TgaSdk{*;}
 -keep public class sg.just4fun.tgasdk.tga.ui*{*;}
 -keep public class sg.just4fun.tgasdk.adsdk*{*;}
 
