@@ -155,6 +155,7 @@
 -keep public class sg.just4fun.tgasdk.web.TgaSdk{*;}
 -keep public class sg.just4fun.tgasdk.tga.ui.home.fragment.HomeFragment{*;}
 -keep public class sg.just4fun.tgasdk.tga.ui.my.fragment.MyFragment{*;}
+-keep public class sg.just4fun.tgasdk.conctart.*{*;}
 
 -dontnote android.net.http.*
 -dontnote org.apache.commons.codec.**
