@@ -355,7 +355,7 @@ public class TgaSdk {
             @Override
             public void onError(Response<HttpBaseResult<UserInFoBean>> response) {
                 isSuccess=0;
-                initCallback.initError(response.getException().getMessage());
+                initCallback.initError("errorCode=" + -5);
                 Log.e("初始化", "充值失败=" + response.getException().getMessage());
             }
         });
