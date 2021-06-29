@@ -150,11 +150,15 @@
 -keep public class * extends android.support.v7.**
 -keep public class * extends android.support.annotation.**
 -keep public class sg.just4fun.tgasdk.callback.*{*;}
--keep public class sg.just4fun.tgasdk.web*{*;}
+-keep public class sg.just4fun.tgasdk.web.banner.AdConfigUtlis{*;}
+-keep public class sg.just4fun.tgasdk.web.goPage.GoPageUtils{*;}
+-keep public class sg.just4fun.tgasdk.web.pay.GooglePayWayUtils{*;}
+-keep public class sg.just4fun.tgasdk.web.share.ShareUtils{*;}
 -keep public class sg.just4fun.tgasdk.web.TgaSdk{*;}
--keep public class sg.just4fun.tgasdk.tga.ui*{*;}
--keep public class sg.just4fun.tgasdk.adsdk*{*;}
-
+-keep public class sg.just4fun.tgasdk.tga.ui.home.fragment.HomeFragment{*;}
+-keep public class sg.just4fun.tgasdk.tga.ui.my.fragment.MyFragment{*;}
+-keep public class sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils{*;}
+-keep public class sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean{*;}
 
 -dontnote android.net.http.*
 -dontnote org.apache.commons.codec.**
