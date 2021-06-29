@@ -167,7 +167,6 @@
 -keep public class sg.just4fun.tgasdk.conctart.*{*;}
 -keep public class sg.just4fun.tgasdk.modle.*{*;}
 -keep public class sg.just4fun.tgasdk.tga.base.*{*;}
--keep public class sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean{*;}
 
 
 -dontnote android.net.http.*
@@ -180,7 +179,7 @@
 
 # 保留support下的所有类及其内部类
 -keep class android.support.** {*;}
-
+-keep class com.applovin.** {*;}
 # 保留R下面的资源
 -keep class **.R$* {*;}
 
