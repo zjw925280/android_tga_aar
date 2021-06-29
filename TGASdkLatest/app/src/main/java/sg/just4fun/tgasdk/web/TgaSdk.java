@@ -310,20 +310,23 @@ public class TgaSdk {
                                         }catch (Exception e){
                                             gameCentreUrl= Global.YUMING + "/h5tga";
                                         }
-                                        List<UserInFoBean.AdConfigBean> adList = adConfigBean == null ? null : adConfigBean.getAd();
-
-                                        if(adList == null || adList.isEmpty()) {
-                                            applovnIdConfig = null;
-                                            Toast.makeText(mContext,"广告模块没有配置",Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Log.e("tgasdk", "ad配置表==" + adList.size());
-                                            try{
-                                                applovnIdConfig = adList.get(0).getConfig().toJson().toString();
-                                            } catch (Exception e2) {
+                                        if (adConfigBean!=null){
+                                            List<UserInFoBean.AdConfigBean> adList =  adConfigBean.getAd();
+                                            if(adList == null || adList.isEmpty()) {
                                                 applovnIdConfig = null;
+                                                Toast.makeText(mContext,"广告模块没有配置",Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.e("tgasdk", "ad配置表==" + adList.size());
+                                                try{
+                                                    applovnIdConfig = adList.get(0).getConfig().toJson().toString();
+                                                } catch (Exception e2) {
+                                                    applovnIdConfig = null;
+                                                }
+                                                Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
                                             }
-                                            Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
                                         }
+
+
                                     }else {
                                         gameCentreUrl= Global.YUMING + "/h5tga";
                                     }
