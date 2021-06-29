@@ -149,7 +149,9 @@
 -keep public class * extends android.support.v4.**
 -keep public class * extends android.support.v7.**
 -keep public class * extends android.support.annotation.**
--keep public class sg.just4fun.tgasdk.web.*{*;}
+-keep public class sg.just4fun.tgasdk.web.TgaSdk{*;}
+-keep public class sg.just4fun.tgasdk.callback.*{*;}
+
 
 -dontnote android.net.http.*
 -dontnote org.apache.commons.codec.**
