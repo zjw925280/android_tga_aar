@@ -167,6 +167,9 @@
 -keep public class sg.just4fun.tgasdk.modle.UserInFoBean{*;}
 -keep public class sg.just4fun.tgasdk.tga.base.HttpBaseResult{*;}
 -keep public class sg.just4fun.tgasdk.tga.base.*{*;}
+-keep public class sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean{*;}
+
+
 -dontnote android.net.http.*
 -dontnote org.apache.commons.codec.**
 -dontnote org.apache.http.**
