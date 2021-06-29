@@ -161,13 +161,14 @@
 -keep public class sg.just4fun.tgasdk.web.pay.GoogleBillingUtil{*;}
 -keep public class sg.just4fun.tgasdk.web.share.ShareCallblackInfo{*;}
 -keep public class sg.just4fun.tgasdk.web.TgaSdk{*;}
+-keep public class sg.just4fun.tgasdk.web.JavaScriptinterface{*;}
 -keep public class sg.just4fun.tgasdk.tga.ui.home.fragment.HomeFragment{*;}
 -keep public class sg.just4fun.tgasdk.tga.ui.my.fragment.MyFragment{*;}
 -keep public class sg.just4fun.tgasdk.conctart.*{*;}
 -keep public class sg.just4fun.tgasdk.modle.UserInFoBean{*;}
 -keep public class sg.just4fun.tgasdk.tga.base.HttpBaseResult{*;}
 -keep public class sg.just4fun.tgasdk.tga.base.*{*;}
--keep public class sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean{*;}
+-keep public class sg.just4fun.tgasdk.adsdk.*{*;}
 
 
 -dontnote android.net.http.*
