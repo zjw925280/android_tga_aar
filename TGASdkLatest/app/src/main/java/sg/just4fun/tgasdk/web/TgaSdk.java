@@ -240,8 +240,8 @@ public class TgaSdk {
     }
 
     //跳转游戏中心
-    public static void goGameCenter(Context context,String schemeQuery) {
-        goPage(context, "",true,schemeQuery);
+    public static void goLink(Context context,String url) {
+        goPage(context, url,true,"");
     }
 
     public static void shareSuccess(String uuid) {
