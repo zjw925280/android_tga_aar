@@ -3,6 +3,7 @@ package sg.just4fun.tgasdk.web;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -261,6 +262,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
 
     @JavascriptInterface
     public void logout(String uuid,String options) {
+
         Log.d("是不是","logout");
         if(TgaSdk.listener != null) {
             TgaSdk.listener.quitLogin(context);
@@ -327,6 +329,19 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
             }
         }
 
+    }
+//    切换横屏
+    @JavascriptInterface
+    public void HorizontalScreen(String uuid, String options) {
+        Log.e("HorizontalScreen","横屏options="+options);
+        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    //    切换竖屏
+    @JavascriptInterface
+    public void VerticalScreen(String uuid, String options) {
+        Log.e("VerticalScreen","竖屏options="+options);
+        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //切换竖屏
     }
 
 
