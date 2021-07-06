@@ -17,9 +17,6 @@ import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-//import com.tencent.smtt.sdk.WebSettings;
-//import com.tencent.smtt.sdk.WebView;
-//import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.BufferedReader;
 import java.io.File;

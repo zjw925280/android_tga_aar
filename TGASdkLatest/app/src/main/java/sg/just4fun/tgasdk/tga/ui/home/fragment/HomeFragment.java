@@ -18,9 +18,6 @@ import androidx.annotation.RequiresApi;
 import com.android.billingclient.api.SkuDetails;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-//import com.tencent.smtt.sdk.WebSettings;
-//import com.tencent.smtt.sdk.WebView;
-//import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

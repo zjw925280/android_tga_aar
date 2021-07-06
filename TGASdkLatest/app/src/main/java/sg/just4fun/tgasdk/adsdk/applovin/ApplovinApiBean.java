@@ -18,7 +18,6 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.google.gson.Gson;
-//import com.tencent.smtt.sdk.WebView;
 
 import java.util.UUID;
 
