@@ -18,7 +18,7 @@
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
-<<<<<<< .mine
+
 #-renamesourcefileattribute SourceFile
 
 # This is a configuration file for ProGuard.
