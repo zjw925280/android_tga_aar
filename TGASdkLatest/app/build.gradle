@@ -66,7 +66,7 @@ dependencies {
     implementation 'com.android.billingclient:billing:2.2.1'
 //    api 'com.tencent.tbs.tbssdk:sdk:43939'
 //    x5内核
-    implementation files('libs\\x5code.jar')
+//    implementation files('libs\\x5code.jar')
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 

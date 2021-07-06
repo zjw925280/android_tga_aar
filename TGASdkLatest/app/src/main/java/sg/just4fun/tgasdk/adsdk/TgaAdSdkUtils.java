@@ -2,11 +2,12 @@ package sg.just4fun.tgasdk.adsdk;
 
 import android.os.Build;
 import android.util.Log;
+import android.webkit.WebView;
 
 import androidx.annotation.RequiresApi;
 
 import com.facebook.share.widget.ShareDialog;
-import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebView;
 
 import org.json.JSONArray;
 import org.json.JSONException;

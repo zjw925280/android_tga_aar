@@ -1,5 +1,6 @@
 package sg.just4fun.tgasdk.web;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -7,6 +8,10 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -14,10 +19,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.tencent.smtt.sdk.WebChromeClient;
-import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+//import com.tencent.smtt.sdk.WebChromeClient;
+//import com.tencent.smtt.sdk.WebSettings;
+//import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebViewClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,10 +44,10 @@ import sg.just4fun.tgasdk.web.share.ShareUtils;
 
 public class WebViewGameActivity extends AppCompatActivity implements TGACallback.ShareCallback{
     private static String TGA="WebViewGameActivity";
-    public static MyWebView add_view;
+    public static LollipopFixedWebView add_view;
     private String url;
    private int isFrist=0;
-    private MyWebView newWebView;
+    private LollipopFixedWebView newWebView;
     private String lang1;
     private ImageView img_loading;
     public static RelativeLayout rl_loading;
@@ -58,6 +63,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         }
     }
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +113,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         FacebookTpBean.callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void upWebview(int pag,String lang, MyWebView webView) {
+    private void upWebview(int pag,String lang, WebView webView) {
         Glide.with(WebViewGameActivity.this).load(R.mipmap.gif)
                 .into(img_loading);
         rl_loading.setVisibility(View.VISIBLE);
@@ -177,7 +183,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                                                            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
 
                                                                Log.e("webviewOpen","onCreateWindow=");
-                                                               newWebView = new MyWebView(WebViewGameActivity.this);//新创建一个webview
+                                                               newWebView = new LollipopFixedWebView(WebViewGameActivity.this);//新创建一个webview
 
                                                                initWebView(newWebView);//初始化webview
 
@@ -232,6 +238,9 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.KITKAT) {
             add_view.setWebContentsDebuggingEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            add_view.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
     }
 

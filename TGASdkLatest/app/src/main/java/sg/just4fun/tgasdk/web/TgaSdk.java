@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.PostRequest;
-import com.tencent.smtt.sdk.QbSdk;
+//import com.tencent.smtt.sdk.QbSdk;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,32 +93,32 @@ public class TgaSdk {
 
 
     public static void initTBS(Context context) {
-
-//        add_view.getCrashExtraMessage(this);
-        //视频为了避免闪屏和透明问题
-//        mContext.getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        //避免输入法界面弹出后遮挡输入光标的问题
-//        mContext.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        //非wifi情况下，主动下载x5内核
-        QbSdk.setDownloadWithoutWifi(true);
-        //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
-        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
-            @Override
-            public void onViewInitFinished(boolean arg0) {
-                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
-                Log.i(TGA,"腾讯 X 5 初始化:" + arg0);
-                Log.i(TGA,arg0 == true ? "腾讯 X5 初始化成功！" : "腾讯 X5 初始化失败！");
-                if(arg0==false){
-                    initTBS(context);
-                }
-            }
-            @Override
-            public void onCoreInitFinished() {
-
-            }
-        };
-        //x5内核初始化接口
-        QbSdk.initX5Environment(context.getApplicationContext(), cb);
+//
+////        add_view.getCrashExtraMessage(this);
+//        //视频为了避免闪屏和透明问题
+////        mContext.getWindow().setFormat(PixelFormat.TRANSLUCENT);
+//        //避免输入法界面弹出后遮挡输入光标的问题
+////        mContext.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+//        //非wifi情况下，主动下载x5内核
+//        QbSdk.setDownloadWithoutWifi(true);
+//        //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
+//        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+//            @Override
+//            public void onViewInitFinished(boolean arg0) {
+//                //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+//                Log.i(TGA,"腾讯 X 5 初始化:" + arg0);
+//                Log.i(TGA,arg0 == true ? "腾讯 X5 初始化成功！" : "腾讯 X5 初始化失败！");
+//                if(arg0==false){
+//                    initTBS(context);
+//                }
+//            }
+//            @Override
+//            public void onCoreInitFinished() {
+//
+//            }
+//        };
+//        //x5内核初始化接口
+//        QbSdk.initX5Environment(context.getApplicationContext(), cb);
 
     }
 

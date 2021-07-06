@@ -3,6 +3,7 @@ package sg.just4fun.tgasdk.tpsdk.facebook;
 import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
+import android.webkit.WebView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -13,7 +14,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebView;
 
 import sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils;
 import sg.just4fun.tgasdk.tpsdk.TgaTpBean;
@@ -119,7 +120,7 @@ public class FacebookTpBean implements TgaTpBean {
 
 
     @Override
-    public boolean doShare(Activity context, WebView webView, AppShareInFo sharInfo,String uuid) {
+    public boolean doShare(Activity context, WebView webView, AppShareInFo sharInfo, String uuid) {
         this.webView=webView;
         this.uuid=uuid;
         Log.e("分享","地址=="+sharInfo.getUrl());

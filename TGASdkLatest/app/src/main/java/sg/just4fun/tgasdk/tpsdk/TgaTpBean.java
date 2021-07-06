@@ -1,8 +1,9 @@
 package sg.just4fun.tgasdk.tpsdk;
 
 import android.app.Activity;
+import android.webkit.WebView;
 
-import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebView;
 
 import sg.just4fun.tgasdk.web.share.AppShareInFo;
 

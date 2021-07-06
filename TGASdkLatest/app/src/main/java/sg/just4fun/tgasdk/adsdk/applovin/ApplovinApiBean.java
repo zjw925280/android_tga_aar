@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AbsoluteLayout;
 
 import androidx.annotation.RequiresApi;
@@ -17,7 +18,7 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.sdk.AppLovinSdk;
 import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.google.gson.Gson;
-import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebView;
 
 import java.util.UUID;
 

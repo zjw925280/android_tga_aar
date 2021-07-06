@@ -2,11 +2,12 @@ package sg.just4fun.tgasdk.web.pay;
 
 import android.os.Build;
 import android.util.Log;
+import android.webkit.WebView;
 
 import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
-import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebView;
 
 import org.json.JSONException;
 import org.json.JSONObject;

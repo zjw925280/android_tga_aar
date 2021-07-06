@@ -7,13 +7,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-            <com.tencent.smtt.sdk.WebView
-                android:scrollbars="none"
-                android:id="@+id/add_view"
-                android:layerType="hardware"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
+<!--            <com.tencent.smtt.sdk.WebView-->
+<!--                android:scrollbars="none"-->
+<!--                android:id="@+id/add_view"-->
+<!--                android:layerType="hardware"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                />-->
+        <sg.just4fun.tgasdk.web.LollipopFixedWebView
+            android:scrollbars="none"
+            android:id="@+id/add_view"
+            android:layerType="hardware"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
         <RelativeLayout
             android:visibility="gone"
             android:id="@+id/rl_loading"

@@ -5,11 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
+import android.webkit.WebView;
 
 import androidx.annotation.RequiresApi;
 
 import com.google.gson.Gson;
-import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebView;
 
 import java.util.LinkedList;
 import java.util.Map;

@@ -13,13 +13,18 @@
     android:id="@+id/rlayout_web"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-        <sg.just4fun.tgasdk.tga.view.MyWebView
-            android:id="@+id/add_view1"
-            android:layerType="hardware"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
+<!--        <sg.just4fun.tgasdk.tga.view.MyWebView-->
+<!--            android:id="@+id/add_view1"-->
+<!--            android:layerType="hardware"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            />-->
+    <sg.just4fun.tgasdk.web.LollipopFixedWebView
+        android:id="@+id/add_view1"
+        android:layerType="hardware"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 </RelativeLayout>
 
 

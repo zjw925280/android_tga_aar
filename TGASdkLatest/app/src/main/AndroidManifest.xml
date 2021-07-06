@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!--   谷歌支付 -->q
+    <!--   谷歌支付 -->
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
 
@@ -22,11 +22,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden" ></activity>
-        <service
-            android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"
-            android:label="dexopt"
-            android:process=":dexopt" >
-        </service>
+<!--        <service-->
+<!--            android:name="com.tencent.smtt.export.external.DexClassLoaderProviderService"-->
+<!--            android:label="dexopt"-->
+<!--            android:process=":dexopt" >-->
+<!--        </service>-->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" /> <!-- 适配华为（huawei）刘海屏 -->

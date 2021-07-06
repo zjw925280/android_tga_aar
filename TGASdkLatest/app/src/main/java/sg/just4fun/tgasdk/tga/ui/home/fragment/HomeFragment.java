@@ -6,6 +6,9 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -15,9 +18,9 @@ import androidx.annotation.RequiresApi;
 import com.android.billingclient.api.SkuDetails;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+//import com.tencent.smtt.sdk.WebSettings;
+//import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -36,6 +39,7 @@ import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.tga.utils.SpUtils;
 import sg.just4fun.tgasdk.web.Conctart;
 import sg.just4fun.tgasdk.web.JavaScriptinterface;
+import sg.just4fun.tgasdk.web.LollipopFixedWebView;
 import sg.just4fun.tgasdk.web.TgaSdk;
 import sg.just4fun.tgasdk.web.goPage.GoPageUtils;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
@@ -44,13 +48,13 @@ import sg.just4fun.tgasdk.web.share.ShareUtils;
 public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallback {
     public static String TGA="Home";
     private String lin_url;
-    public WebView add_view;
+    public LollipopFixedWebView add_view;
     public ImageView img_loading;
     public RelativeLayout rl_loading;
     private int isFrist=0;
     private String TGA_URL = "";
     private List<SkuDetails> mSkuDetails=new ArrayList<>();
-    private WebView newWebView;
+    private LollipopFixedWebView newWebView;
     private ApplovinApiBean apploving;
     private JavaScriptinterface tgaBridge;
     private String lang1;
@@ -220,9 +224,6 @@ public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallb
     }
 
     private void initWebView(WebView webView) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.setWebContentsDebuggingEnabled(true);
-        }
         WebSettings webSetting = webView.getSettings();
         webSetting.setAllowFileAccess(true);
         webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -248,8 +249,8 @@ public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallb
         webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
         // webSetting.setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
-        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.KITKAT) {
-            add_view.setWebContentsDebuggingEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
     }
 

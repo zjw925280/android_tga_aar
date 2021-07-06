@@ -6,6 +6,9 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -14,9 +17,9 @@ import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+//import com.tencent.smtt.sdk.WebSettings;
+//import com.tencent.smtt.sdk.WebView;
+//import com.tencent.smtt.sdk.WebViewClient;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,13 +38,14 @@ import sg.just4fun.tgasdk.tga.mvp.MvpFragment;
 import sg.just4fun.tgasdk.tga.mvp.MvpPresenter;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.web.Conctart;
+import sg.just4fun.tgasdk.web.LollipopFixedWebView;
 import sg.just4fun.tgasdk.web.TgaSdk;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
 
 
 public class MyFragment extends MvpFragment  implements  TGACallback.ShareCallback{
    private static String TGA="MyFragment";
-    public WebView add_view;
+    public LollipopFixedWebView add_view;
     public ImageView img_loading;
     public RelativeLayout rl_loading;
     private static final String FILE_LAST_NAME = "temptext.txt";
@@ -215,6 +219,9 @@ if ( TgaSdk.listener!=null){
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             add_view.setWebContentsDebuggingEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            add_view.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
     }
 
