@@ -136,6 +136,7 @@ public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallb
             TgaSdk.listener.quitLogin(getActivity());
             return;
         }
+        Log.e("啥呀","啥呀="+TgaSdk.gameCentreUrl);
 //        TGA_URL = "https://data.just4fun.sg/h5tga4bip/?txn_id=18&msisdn=456&togameid=56&lang=tr&appversion=3.76";
         if (lin_url==null||lin_url.equals("")){
             if (tgaSdkUserInFo!=null&&tgaSdkUserInFo.getUserId()!=null){
