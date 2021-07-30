@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
@@ -30,7 +29,6 @@ import sg.just4fun.tgasdk.modle.GooglePayInfoBean;
 import sg.just4fun.tgasdk.modle.UserInFoBean;
 import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
 import sg.just4fun.tgasdk.tga.base.JsonCallback;
-import sg.just4fun.tgasdk.tga.base.HttpBaseMapResult;
 import sg.just4fun.tgasdk.tga.global.AppUrl;
 import sg.just4fun.tgasdk.tga.global.Global;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
@@ -89,25 +87,25 @@ public class TgaSdk {
         try {
             jsonObject.put("appId", appId);
             data = jsonObject.toString();
-            
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, data);
-        OkGo.<HttpBaseResult<GooglePayInfoBean>>post(AppUrl.GET_GOOGLEPAY_INFO)
+        OkGo.<HttpBaseResult>post(AppUrl.GET_GOOGLEPAY_INFO)
                 .tag(mContext)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>() {
+                .execute(new JsonCallback<HttpBaseResult>() {
                     @Override
-                    public void onSuccess(Response<HttpBaseResult<GooglePayInfoBean>> response) {
+                    public void onSuccess(Response<HttpBaseResult> response) {
                         if (response.body().getStateCode() == 1) {
-                           infoList = response.body().getResultInfo().getData();
+                           infoList =(List<GooglePayInfoBean.GooglePayInfo>) response.body().getResultInfo().get("data");
                            Log.e("崩了","崩了="+infoList);
                         }
                     }
                     @Override
-                    public void onError(Response<HttpBaseResult<GooglePayInfoBean>> response) {
+                    public void onError(Response<HttpBaseResult> response) {
                      Log.e("初始化","失败="+response.message());
                     }
                 });
@@ -252,12 +250,12 @@ public class TgaSdk {
         }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, data);
-        PostRequest<HttpBaseMapResult> post = OkGo.<HttpBaseMapResult>post(AppUrl.TGA_SDK_INFO);
+        PostRequest<HttpBaseResult> post = OkGo.<HttpBaseResult>post(AppUrl.TGA_SDK_INFO);
         post.tag(mContext);
         post.upRequestBody(body);
-        post.execute(new JsonCallback<HttpBaseMapResult>() {
+        post.execute(new JsonCallback<HttpBaseResult>() {
             @Override
-            public void onSuccess(Response<HttpBaseMapResult> response) {
+            public void onSuccess(Response<HttpBaseResult> response) {
                 try{
                     if (response.body().getStateCode() == 1) {
                         Log.e(TGA,"初始化成功的=");
@@ -333,7 +331,7 @@ public class TgaSdk {
             }
 
             @Override
-            public void onError(Response<HttpBaseMapResult> response) {
+            public void onError(Response<HttpBaseResult> response) {
                 isSuccess=0;
                 initCallback.initError("errorCode=" + -5);
                 Log.e("初始化", "充值失败=" + response.getException().getMessage());

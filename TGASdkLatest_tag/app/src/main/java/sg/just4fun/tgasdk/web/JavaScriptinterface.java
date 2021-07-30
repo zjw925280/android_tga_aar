@@ -861,16 +861,16 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, data);
         Log.e("初始化","body="+body.toString());
-        OkGo.<HttpBaseResult<GooglePayInfoBean>>post(AppUrl.GET_GOOGLEPAY_INFO)
+        OkGo.<HttpBaseResult>post(AppUrl.GET_GOOGLEPAY_INFO)
                 .tag(context)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>() {
+                .execute(new JsonCallback<HttpBaseResult>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
-                    public void onSuccess(Response<HttpBaseResult<GooglePayInfoBean>> response) {
+                    public void onSuccess(Response<HttpBaseResult> response) {
                         if (response.body().getStateCode() == 1) {
 
-                            infoList = response.body().getResultInfo().getData();
+                            infoList =(List<GooglePayInfoBean.GooglePayInfo>) response.body().getResultInfo().get("data");
                             if (infoList.size()==0){
                                 Log.e("googlePayWay","googlepay配置表商品为0");
                                 return;
@@ -884,7 +884,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                         }
                     }
                     @Override
-                    public void onError(Response<HttpBaseResult<GooglePayInfoBean>> response) {
+                    public void onError(Response<HttpBaseResult> response) {
                         Log.e("googlePayWay","获取配置表商品失败"+response.getException().toString());
                     }
                 });
