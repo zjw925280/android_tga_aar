@@ -87,25 +87,24 @@ public class TgaSdk {
         try {
             jsonObject.put("appId", appId);
             data = jsonObject.toString();
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, data);
-        OkGo.<HttpBaseResult>post(AppUrl.GET_GOOGLEPAY_INFO)
+        OkGo.<HttpBaseResult<GooglePayInfoBean>>post(AppUrl.GET_GOOGLEPAY_INFO)
                 .tag(mContext)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult>() {
+                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>() {
                     @Override
-                    public void onSuccess(Response<HttpBaseResult> response) {
+                    public void onSuccess(Response<HttpBaseResult<GooglePayInfoBean>> response) {
                         if (response.body().getStateCode() == 1) {
-                           infoList =(List<GooglePayInfoBean.GooglePayInfo>) response.body().getResultInfo().get("data");
+                           infoList = response.body().getResultInfo().getData();
                            Log.e("崩了","崩了="+infoList);
                         }
                     }
                     @Override
-                    public void onError(Response<HttpBaseResult> response) {
+                    public void onError(Response<HttpBaseResult<GooglePayInfoBean>> response) {
                      Log.e("初始化","失败="+response.message());
                     }
                 });
@@ -260,21 +259,28 @@ public class TgaSdk {
                     if (response.body().getStateCode() == 1) {
                         Log.e(TGA,"初始化成功的=");
                         if (listener!=null){
-                            Log.e(TGA,"listener是不是空了="+listener);
-                            Map<String, Object> resultInfo = response.body().getResultInfo();
+                            Gson gson = new Gson();
+                            Log.e(TGA,"listener是不是空了="+response.body().getResultInfo());
+                            String resultInfo1 = gson.toJson(response.body().getResultInfo()) ;
+                            Log.e(TGA,"listener是不是空了resultInfo1"+resultInfo1);
+                            JSONObject jsonObject1 = new JSONObject(resultInfo1);
                             String pkName = mContext.getPackageName();
-                            sdkPkName = (String)resultInfo.get("packageName");
-                            if (sdkPkName!=null&&!sdkPkName.equals("")){
-                                if (sdkPkName.equals(pkName)){//包名相等
+                            if (jsonObject1.has("packageName")){
+                                packageName = (String)jsonObject1.get("packageName");
+                            }
+                            if (packageName!=null&&!packageName.equals("")){
+                                if (packageName.equals(pkName)){//包名相等
                                     isSuccess=1;
                                     initCallback.initSucceed();
-                                    appId = (String)resultInfo.get("appId");
-                                    iconpath = (String)resultInfo.get("iconpath");
-                                    packageName = (String)resultInfo.get("packageName");
-                                    appConfigList =(String)resultInfo.get("appConfig");
-                                    Log.e("初始化", "配置表==" +appConfigList);
+                                    appId = (String)jsonObject1.get("appId");
+                                    if (jsonObject1.has("iconpath")){
+                                        iconpath = (String)jsonObject1.get("iconpath");
+                                    }
+                                    if (jsonObject1.has("appConfig")){
+                                        appConfigList = (String)jsonObject1.get("appConfig");
+                                    }
+
                                     if(appConfigList!=null&&!appConfigList.equals("")&&!appConfigList.equals("{}")){
-                                        Gson gson = new Gson();
                                         UserInFoBean.AppConfig adConfigBean = gson.fromJson(appConfigList, UserInFoBean.AppConfig.class);
                                         try{
                                             gameCentreUrl = Objects.requireNonNull(requireNotBlankString(adConfigBean.getGameCentreUrl()));
@@ -315,7 +321,6 @@ public class TgaSdk {
 
                         }else {
                             isSuccess=0;
-                            Log.e(TGA,"listener空了="+listener);
                             initCallback.initError("TgaEventListener接口为空");
                         }
 

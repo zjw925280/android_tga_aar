@@ -1,11 +1,9 @@
 package sg.just4fun.tgasdk.tga.base;
 
-import java.util.Map;
-
 public class HttpBaseResult <T> {
 
     private int stateCode;
-    private Map<String,Object> resultInfo;
+    private T resultInfo;
 
     public int getStateCode() {
         return stateCode;
@@ -16,11 +14,11 @@ public class HttpBaseResult <T> {
     }
 
 
-    public Map<String,Object> getResultInfo() {
+    public T getResultInfo() {
         return resultInfo;
     }
 
-    public void setResultInfo( Map<String,Object> resultInfo) {
+    public void setResultInfo(T resultInfo) {
         this.resultInfo = resultInfo;
     }
 
