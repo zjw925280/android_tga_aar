@@ -256,9 +256,8 @@ public class TgaSdk {
         post.execute(new JsonCallback<HttpBaseResult>() {
             @Override
             public void onSuccess(Response<HttpBaseResult> response) {
+                Log.e(TGA,"初始化成功="+response.body().toString()+" 有没有作用呢");
                 try{
-
-                    Log.e(TGA,"初始化成功="+response.body().toString()+" 有没有作用呢");
                     if (response.body().getStateCode() == 1) {
                         Log.e(TGA,"初始化成功的1=");
                         if (listener!=null){
