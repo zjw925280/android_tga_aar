@@ -52,7 +52,6 @@ public class TgaSdk {
     public static String iconpath;
     public static String packageName;
     public static String schemeUrl;
-    private static String sds;
 
 
     private TgaSdk() {
@@ -257,9 +256,8 @@ public class TgaSdk {
             @Override
             public void onSuccess(Response<HttpBaseResult> response) {
                 try{
-                    Log.e(TGA,"初始化成功="+response.body().toString());
                     if (response.body().getStateCode() == 1) {
-                        Log.e(TGA,"初始化成功的1=");
+                        Log.e(TGA,"初始化成功的=");
                         if (listener!=null){
                             Gson gson = new Gson();
                             Log.e(TGA,"listener是不是空了="+response.body().getResultInfo());
@@ -267,9 +265,6 @@ public class TgaSdk {
                             Log.e(TGA,"listener是不是空了resultInfo1"+resultInfo1);
                             JSONObject jsonObject1 = new JSONObject(resultInfo1);
                             String pkName = mContext.getPackageName();
-                            if (jsonObject1.has("sds")){
-                                sds = (String)jsonObject1.get("sds");
-                            }
                             if (jsonObject1.has("packageName")){
                                 packageName = (String)jsonObject1.get("packageName");
                             }
