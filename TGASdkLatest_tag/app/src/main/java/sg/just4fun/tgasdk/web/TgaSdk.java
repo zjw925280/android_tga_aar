@@ -256,12 +256,16 @@ public class TgaSdk {
         post.execute(new JsonCallback<HttpBaseResult>() {
             @Override
             public void onSuccess(Response<HttpBaseResult> response) {
-                Log.e(TGA,"初始化成功="+response.body().toString()+" 有没有作用呢");
                 try{
-                    if (response.body().getStateCode() == 1) {
-                        Log.e(TGA,"初始化成功的1=");
+                    Gson gson = new Gson();
+                    String s = response.body().toString();
+                    JSONObject jsonObject2 = new JSONObject(s);
+                    int stateCode = jsonObject2.getInt("stateCode");
+                    Log.e(TGA,"初始化成功的="+s);
+                    if (stateCode == 1) {
+                        Log.e(TGA,"初始化成功的=");
                         if (listener!=null){
-                            Gson gson = new Gson();
+
                             Log.e(TGA,"listener是不是空了="+response.body().getResultInfo());
                             String resultInfo1 = gson.toJson(response.body().getResultInfo()) ;
                             Log.e(TGA,"listener是不是空了resultInfo1"+resultInfo1);

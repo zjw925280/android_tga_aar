@@ -24,7 +24,7 @@ public class HttpBaseResult <T> {
 
     @Override
     public String toString() {
-        return "HttpBaseResult{" +
+        return "{" +
                 "stateCode=" + stateCode +
                 ", resultInfo=" + resultInfo +
                 '}';
