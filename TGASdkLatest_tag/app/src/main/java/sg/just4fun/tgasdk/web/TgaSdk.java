@@ -257,14 +257,16 @@ public class TgaSdk {
             @Override
             public void onSuccess(Response<HttpBaseResult> response) {
                 try{
-                    Log.e(TGA,"初始化成功="+response.body().toString());
-                    if (response.body().getStateCode() == 1) {
-                        Log.e(TGA,"初始化成功的1=");
+                    Gson gson = new Gson();
+                    String s = gson.toJson(response.body());
+                    JSONObject jsonObject2 = new JSONObject(s);
+                    int stateCode = (Integer) jsonObject2.get("stateCode");
+                    Log.e(TGA,"初始化成功="+response.body().toString()+" gson="+s+"stateCode="+stateCode);
+                    if (stateCode == 1) {
                         if (listener!=null){
-                            Gson gson = new Gson();
-                            Log.e(TGA,"listener是不是空了="+response.body().getResultInfo());
+                            Log.e(TGA,"listener="+response.body().getResultInfo());
                             String resultInfo1 = gson.toJson(response.body().getResultInfo()) ;
-                            Log.e(TGA,"listener是不是空了resultInfo1"+resultInfo1);
+                            Log.e(TGA,"resultInfo1"+resultInfo1);
                             JSONObject jsonObject1 = new JSONObject(resultInfo1);
                             String pkName = mContext.getPackageName();
                             if (jsonObject1.has("sds")){
