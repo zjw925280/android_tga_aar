@@ -8,6 +8,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="packagename">The apk package name is inconsistent</string>
-    <string name="sdkerror">SDK initalization failed!</string>
+    <string name="sdkiniterror">SDK initalization failed!</string>
     <string name="payerror">the order is abnormal, please contact customer service.</string>
 </resources>

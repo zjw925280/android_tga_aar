@@ -159,6 +159,7 @@ public class TgaSdk {
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(intent);
                             }
+
                             return;
                       }else {
                             Log.e(TGA,"TgaSdk.listener=null");
@@ -259,7 +260,6 @@ public class TgaSdk {
             @Override
             public void onSuccess(Response response) {
                 String s1 = response.body().toString();
-//                s1="{\"stateCode\":1,\"resultInfo\":{\"appConfig\":\"{\\\"ad\\\":[{\\\"moduleAppId\\\":\\\"1\\\",\\\"channelName\\\":\\\"applovin\\\",\\\"weight\\\":1,\\\"enabled\\\":true,\\\"config\\\":{\\\"interstitial\\\":\\\"25ddb36d401152a9\\\",\\\"titleAd\\\":\\\"365315c423c6a029\\\",\\\"rewardAd\\\":\\\"f200862f970382ea\\\",\\\"bannerAd\\\":\\\"97cc5a65435d808f\\\"}}]}\",\"appName\":null,\"appId\":\"3d2c434a87c94b1ebe3765c4f924c52c\",\"packageName\":\"com.aleta.pacpay\",\"iconpath\":null,\"desc\":\"SUCCESS\"}}";
                 Log.e(TGA,"初始化成功的="+s1);
                 Gson gson = new GsonBuilder()
                         .serializeNulls()
