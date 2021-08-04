@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="E:\android_tga_aar\TGASdk\app\libs"><file name="x5code.jar" path="E:\android_tga_aar\TGASdk\app\libs\x5code.jar"/></source></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="E:\android_tga_aar\TGASdk\app\src\debug\jniLibs"/></dataSet></merger>
