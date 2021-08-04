@@ -7,8 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -334,11 +332,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     @JavascriptInterface
     public void HorizontalScreen(String uuid, String options) {
         Log.e("HorizontalScreen","横屏options="+options);
-        WebViewGameActivity.tv_stuasbar.setVisibility(View.GONE);
-        WindowManager.LayoutParams lp = context.getWindow().getAttributes();
-        lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-        context.getWindow().setAttributes(lp);
-        context.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
@@ -394,7 +387,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @JavascriptInterface
     public void goPage(String uuid,  String options) {
-        Log.e("goPage","goPage"+options);
+        Log.e("goPage","goPage");
         pageId++;
         GoPageUtils.jumpGame(pageId,webview,context,uuid,options);
     }
@@ -404,10 +397,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
          context.finish(); //返回键点击
         Log.e("finishPage","关闭");
          GoogleBillingUtil.cleanListener();
-        webview.stopLoading();
-        webview.removeAllViews();
-        webview.destroy();
-        webview = null;
     }
     @JavascriptInterface
     public void getPayAppid(String uuid,  String options) {
@@ -482,6 +471,8 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         }
 
     }
+
+
 
     @JavascriptInterface
     public void thirdPartyShare(String uuid,  String options) {
@@ -608,11 +599,17 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
             if (list.size()>0){
                 String price1 = list.get(0).getPrice();
                 String number = getNumber(price1);
-                String[] split = number.split("\\.");
-                int i = split[1].length();
-                String replace = number.replace("\\.", "");
+//            int length = split[1].length();
+
+                Log.e("googlePayWay","number="+number+" number.length()"+number.length());
+
+                String xsStr = number.substring(number.indexOf("."));
+
+                int i = xsStr.length() - 1;
+                String replace = xsStr.replace(".", "");
                 long pow = (long) Math.pow(10, i);
-                double i1 =Double.parseDouble(replace)*pow;
+                String replace1 = number.replace(xsStr, "");
+                long i1 = Long.parseLong(replace1)*pow+Long.parseLong(replace);
                 String replace2 = price1.replace(number, "");
                 try {
                     EncryptStrBean.PriceBean priceBean = new EncryptStrBean.PriceBean(String.valueOf(i1) , String.valueOf(pow), replace2);
@@ -894,7 +891,5 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                     }
                 });
     }
-
-
 
 }

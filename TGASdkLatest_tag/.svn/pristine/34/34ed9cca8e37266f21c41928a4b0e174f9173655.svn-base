@@ -99,7 +99,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         gopag = intent.getIntExtra("gopag", -1);
-        statusaBar = intent.getBooleanExtra("statusaBar",true);
+        statusaBar = intent.getBooleanExtra("statusaBar",false);
         navigationBar = intent.getBooleanExtra("navigationBar",true);
         backgroundColor = intent.getStringExtra("backgroundColor");
         statusaBarColor = intent.getStringExtra("statusaBarColor");
@@ -136,7 +136,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
             }
             upWebview(gopag,"",add_view);
         }else {
-            relayout.setVisibility(View.GONE);
+                relayout.setVisibility(View.GONE);
             int change = SpUtils.getInt(this, "change", -1);
             if (change==1){
                 String string = SpUtils.getString(this, "changelang", "");
@@ -262,7 +262,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                                     super.onPageStarted(view, url, favicon);
                                     rl_loading.setVisibility(View.GONE);
 
-                                    Log.e(TGA,"onPageStarted="+url);
+                                    Log.e("执行","onPageStarted="+url);
                                     if (!url.startsWith(url) && !url.contains("paypal")) {
 //                    alertDialog.show();
 //                    alertDialog.getWindow().setBackgroundDrawableResource(R.color.translucent_background);
@@ -423,9 +423,14 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         super.onBackPressed();
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
+       if(add_view!=null){
+           add_view.stopLoading();
+           add_view.removeAllViews();
+           add_view.destroy();
+           add_view = null;
+       }
     }
 }

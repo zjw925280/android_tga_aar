@@ -404,10 +404,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
          context.finish(); //返回键点击
         Log.e("finishPage","关闭");
          GoogleBillingUtil.cleanListener();
-        webview.stopLoading();
-        webview.removeAllViews();
-        webview.destroy();
-        webview = null;
     }
     @JavascriptInterface
     public void getPayAppid(String uuid,  String options) {
