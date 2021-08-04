@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: ./app/libs/x5code.jar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/libs/x5code.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
