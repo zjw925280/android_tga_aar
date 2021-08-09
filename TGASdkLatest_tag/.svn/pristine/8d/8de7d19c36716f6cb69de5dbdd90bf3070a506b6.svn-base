@@ -35,8 +35,8 @@ public class GoPageUtils {
         GoPageUtils.uuid=uuid;
         GoPageUtils.context=context;
         Gson gson = new Gson();
-        boolean badJson = Conctant.isBadJson(options);
-        if (badJson){
+//        boolean badJson = Conctant.isBadJson(options);
+//        if (badJson){
             StatusaAndNavigationModel statusaAndNavigationModel = gson.fromJson(options, StatusaAndNavigationModel.class);
             StatusaAndNavigationModel.NavigationBarModel navigationBar = statusaAndNavigationModel.getNavigationBar();
             StatusaAndNavigationModel.NavigationBarModel statusBarDisplay = statusaAndNavigationModel.getStatusBarDisplay();
@@ -49,16 +49,14 @@ public class GoPageUtils {
             intent.putExtra("statusaBarColor",statusBarDisplay.getBackgroundColor());
             intent.putExtra("navigationBar",navigationBar.isDisplay());
             intent.putExtra("backgroundColor",navigationBar.getBackgroundColor());
-            intent.putExtra("yssdk",1);
             context.startActivity(intent);
-        }else {
-            Intent intent = new Intent(context, WebViewGameActivity.class);
-            intent.putExtra("url",options);
-            intent.putExtra("uuid",uuid);
-            intent.putExtra("gopag",1);
-            intent.putExtra("yssdk",0);
-            context.startActivity(intent);
-        }
+//        }else {
+//            Intent intent = new Intent(context, WebViewGameActivity.class);
+//            intent.putExtra("url",options);
+//            intent.putExtra("uuid",uuid);
+//            intent.putExtra("gopag",1);
+//            context.startActivity(intent);
+//        }
             try {
                 GoPageInfo goPageInfo1 = new GoPageInfo(uuid, "36");
                 String s = goPageInfo1.toJson().toString();

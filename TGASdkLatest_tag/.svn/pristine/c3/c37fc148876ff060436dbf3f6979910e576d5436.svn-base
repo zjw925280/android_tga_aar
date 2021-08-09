@@ -54,7 +54,6 @@ import sg.just4fun.tgasdk.web.pay.GoogleBillingUtil;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
 
 public class WebViewGameActivity extends AppCompatActivity implements TGACallback.ShareCallback{
-    public static boolean statusaBar;
     private static String TGA="WebViewGameActivity";
     public static LollipopFixedWebView add_view;
     private String url;
@@ -66,6 +65,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     private int change;
     private FacebookTpBean facebook;
     private int gopag;
+    private boolean statusaBar;
     private boolean navigationBar;
     private  ImageView image_black;
     private TextView tv_webtitle;

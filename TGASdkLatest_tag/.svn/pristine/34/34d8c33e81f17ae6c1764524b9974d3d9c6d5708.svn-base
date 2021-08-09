@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -54,7 +53,6 @@ import sg.just4fun.tgasdk.web.pay.GoogleBillingUtil;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
 
 public class WebViewGameActivity extends AppCompatActivity implements TGACallback.ShareCallback{
-    public static boolean statusaBar;
     private static String TGA="WebViewGameActivity";
     public static LollipopFixedWebView add_view;
     private String url;
@@ -66,6 +64,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     private int change;
     private FacebookTpBean facebook;
     private int gopag;
+    private boolean statusaBar;
     private boolean navigationBar;
     private  ImageView image_black;
     private TextView tv_webtitle;
@@ -73,7 +72,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     private String backgroundColor;
     public static TextView tv_stuasbar;
     private String statusaBarColor;
-    private int yssdk;
 
     public static String urlEncode(String text) {
         try{
@@ -88,7 +86,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view_game);
-
         NotchScreenManager.getInstance().setDisplayInNotch(WebViewGameActivity.this);
         SdkActivityDele.addActivity(WebViewGameActivity.this);
         img_loading = findViewById(R.id.img_loading);
@@ -105,21 +102,16 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
 
         gopag = intent.getIntExtra("gopag", -1);
         statusaBar = intent.getBooleanExtra("statusaBar",true);
-        navigationBar = intent.getBooleanExtra("navigationBar",false);
+        navigationBar = intent.getBooleanExtra("navigationBar",true);
         backgroundColor = intent.getStringExtra("backgroundColor");
         statusaBarColor = intent.getStringExtra("statusaBarColor");
-        yssdk = intent.getIntExtra("yssdk",-1);
+
         int statusBarHeight = getStatusBarHeight(this);
         tv_stuasbar.setHeight(statusBarHeight);
         if (statusaBarColor!=null){
             tv_stuasbar.setBackgroundColor(Color.parseColor(statusaBarColor));
         }else {
-            if (yssdk==1){
-                statusaBarColor="#04a7e8";
-            }else {
-                statusaBarColor="#23D3BE";
-            }
-
+            statusaBarColor="#04a7e8";
             tv_stuasbar.setBackgroundColor(Color.parseColor(statusaBarColor));
         }
         if (backgroundColor!=null){
@@ -282,8 +274,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                                     Log.e("执行","shouldOverrideUrlLoading="+url);
                                     //                if (Uri.parse(url).getHost().equals("data.just4fun.sg")) {
-                                    Uri uri = Uri.parse(url);
-                                    add_view.loadUrl(uri.toString());
                                     return false;
                                 }
 
@@ -415,7 +405,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
             Log.e(TGA,"第二次isFrist="+isFrist);
             TgaAdSdkUtils.flushAllEvents(this.add_view);
             Log.e(TGA,"第二次add_view="+ add_view.getUrl());
-//            GoPageUtils.finishActivityEvents(add_view);
+            GoPageUtils.finishActivityEvents(add_view);
         }
     }
 
