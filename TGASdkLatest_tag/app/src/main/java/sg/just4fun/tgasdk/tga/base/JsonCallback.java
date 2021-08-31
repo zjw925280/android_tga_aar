@@ -1,6 +1,10 @@
 package sg.just4fun.tgasdk.tga.base;
 
+import android.content.Context;
+import android.webkit.WebView;
+
 import com.lzy.okgo.callback.AbsCallback;
+import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.request.base.Request;
 
 import java.lang.reflect.ParameterizedType;
@@ -19,10 +23,12 @@ import okhttp3.Response;
  */
 public abstract class JsonCallback<T> extends AbsCallback<T> {
 
+    private Context context;
     private Type type;
     private Class<T> clazz;
 
-    public JsonCallback() {
+    public JsonCallback(Context context) {
+    this.context=context;
     }
 
     public JsonCallback(Type type) {
@@ -41,8 +47,8 @@ public abstract class JsonCallback<T> extends AbsCallback<T> {
         // 使用的设备信息
         // 可以随意添加,也可以什么都不传
         // 还可以在这里对所有的参数进行加密，均在这里实现
-
-
+        String s = "Tgasdk/2.0" + new WebView(context).getSettings().getUserAgentString();
+        HttpHeaders.setUserAgent(s);
     }
 
     /**

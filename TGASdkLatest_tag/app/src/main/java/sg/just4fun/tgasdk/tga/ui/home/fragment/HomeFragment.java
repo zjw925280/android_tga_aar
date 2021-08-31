@@ -139,10 +139,10 @@ public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallb
         if (lin_url==null||lin_url.equals("")){
             if (tgaSdkUserInFo!=null&&tgaSdkUserInFo.getUserId()!=null){
                 if (tgaSdkUserInFo.getGameId()!=null&&!tgaSdkUserInFo.getGameId().equals("")){
-                    TGA_URL = TgaSdk.gameCentreUrl + "?txnid="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&"+tgaSdkUserInFo.getGameId()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&head="+tgaSdkUserInFo.getAvatar();//无底部
+                    TGA_URL = TgaSdk.gameCentreUrl + "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&"+tgaSdkUserInFo.getGameId()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
                 }else {
 
-                    TGA_URL =TgaSdk.gameCentreUrl + "?txnid="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&head="+tgaSdkUserInFo.getAvatar();//无底部
+                    TGA_URL =TgaSdk.gameCentreUrl + "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
                 }
             }else {
                 TGA_URL = TgaSdk.gameCentreUrl;

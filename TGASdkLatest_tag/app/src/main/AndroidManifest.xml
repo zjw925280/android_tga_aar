@@ -19,7 +19,11 @@
         android:hardwareAccelerated="true"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
-        <activity android:name=".tga.ui.home.HomeActivity"></activity>
+        <activity android:name=".tga.ui.home.HomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize|stateAlwaysHidden"
+            ></activity>
         <activity
             android:name=".web.WebViewGameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

@@ -795,7 +795,7 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
         OkGo.<HttpBaseResult<ResultBean>>post(AppUrl.GET_GOOGLEPAY_RESULT)
                 .tag(mContext)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<ResultBean>>() {
+                .execute(new JsonCallback<HttpBaseResult<ResultBean>>(mContext) {
                     @Override
                     public void onSuccess(Response<HttpBaseResult<ResultBean>> response) {
                         Log.e("googlePayWay","通知成功"+response.body().getResultInfo());
@@ -858,11 +858,11 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
         }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, data);
-        Log.e("初始化","body="+body.toString());
+
         OkGo.<HttpBaseResult<GooglePayInfoBean>>post(AppUrl.GET_GOOGLEPAY_INFO)
                 .tag(context)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>() {
+                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>(context) {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(Response<HttpBaseResult<GooglePayInfoBean>> response) {

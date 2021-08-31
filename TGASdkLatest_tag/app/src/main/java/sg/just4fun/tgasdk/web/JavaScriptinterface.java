@@ -8,7 +8,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -79,14 +81,18 @@ import sg.just4fun.tgasdk.web.pay.GooglePayWayUtils;
 import sg.just4fun.tgasdk.web.pay.ResultBean;
 import sg.just4fun.tgasdk.web.share.AppShareInFo;
 
+import static com.lzy.okgo.utils.HttpUtils.runOnUiThread;
+
 public class JavaScriptinterface implements PurchasesUpdatedListener{
     // The Activity that load the webview with this interface instance.
+
     Activity context;
     private String TGA="JavaScriptinterface";
     private GoogleBillingUtil googleBillingUtil;
     private MyOnPurchaseFinishedListener mOnPurchaseFinishedListener = new MyOnPurchaseFinishedListener();//购买回调接口
     private MyOnQueryFinishedListener mOnQueryFinishedListener = new MyOnQueryFinishedListener();//查询回调接口
     private MyOnStartSetupFinishedListener mOnStartSetupFinishedListener = new MyOnStartSetupFinishedListener();//启动结果回调接口
+
     String tgaUrl;
 //    TTAdNative ttAdNative = null;
     private final String FB_PLACEMENT_ID= "503651173800345_658237148341746";
@@ -102,6 +108,8 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     private int isscu=0;
     private int cishu=5;
     private String metaDataStringApplication1;
+    private OrientationEventListener mOrientationListener;
+    private String TAG="JavaScriptinterface";
 
     //    public static WebView webView;
     public JavaScriptinterface(Activity context, String tgaUrl){
@@ -338,40 +346,21 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     @JavascriptInterface
     public void HorizontalScreen(String uuid, String options) {
         Log.e("HorizontalScreen","横屏options="+options);
-        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                WebViewGameActivity.full(false,context);
+            }
+        });
         WebViewGameActivity.tv_stuasbar.setVisibility(View.GONE);
-        WebViewGameActivity.statusaBar=false;
-           }
+
+    }
 
     //    切换竖屏
     @JavascriptInterface
     public void VerticalScreen(String uuid, String options) {
         Log.e("VerticalScreen","竖屏options="+options);
         context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //切换竖屏
-
-
-    }
-    /**
-     * 修改状态栏为全透明
-     *
-     * @param activity
-     */
-    @TargetApi(19)
-    public static void transparencyBar(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = activity.getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = activity.getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-
 
     }
 
@@ -385,7 +374,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 apploving.showAd(uuid, "banner");
             }
         }
-
     }
 
     @JavascriptInterface
@@ -396,8 +384,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 apploving.hideBannerAd(uuid,"banner");
             }
         }
-
-
     }
 
     @JavascriptInterface
@@ -428,6 +414,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     public void finishPage(String uuid,  String options) {
         Log.e("goPage","关闭");
         GoogleBillingUtil.cleanListener();
+
         context.finish(); //返回键点击
     }
     @JavascriptInterface
@@ -599,12 +586,9 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         Log.d("javascriptInterface", "tryFlushEvents " + uuid + " " + options);
         TgaAdSdkUtils.flushAllEvents(webview);
     }
-
 //        public void onEvent(String event, JSONObject params) {
 //        webview.evaluateJavascript("tgasdk.nativeEvent(\"" +event + "\", " + params.toString(), null);
 //    }
-
-
     public void googlePayWaypay(String id){
         Log.e("googlePayWay","进来了"+id);
         googleBillingUtil = GoogleBillingUtil.getInstance(id)
@@ -613,7 +597,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 .setOnStartSetupFinishedListener(mOnStartSetupFinishedListener)
                 .build(context);
         googleBillingUtil.setIsAutoConsumeAsync(true);
-
     }
 
     //查询商品信息回调接口
@@ -639,7 +622,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                     EncryptStrBean.PriceBean priceBean = new EncryptStrBean.PriceBean(String.valueOf(i1) , String.valueOf(pow), replace2);
                     price = priceBean.toJson().toString();
                     Log.e("googlePayWay","得到值price1="+list.get(0).toString());
-
                 } catch (Exception e) {
                     Log.e("googlePayWay","访问服务端="+e.getMessage());
                     e.printStackTrace();
@@ -651,9 +633,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 try {
                     String encryptStr1 = encryptStrBean.toJson().toString();
                     String encryptStr = DesEncryptUtils.encrypt(encryptStr1, TgaSdk.appPaymentKey);
-
                     googlePayResult(TgaSdk.appId,context,"",encryptStr,"inapp",TgaSdk.appId,0);
-
                 } catch (Exception e) {
                     Log.e("googlePayWay","访问服务端="+e.getMessage());
                     e.printStackTrace();
@@ -672,14 +652,11 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 String encryptStr1 = encryptStrBean.toJson().toString();
                 String encryptStr = DesEncryptUtils.encrypt(encryptStr1, TgaSdk.appPaymentKey);
                 googlePayResult(TgaSdk.appId,context,"",encryptStr,"inapp",TgaSdk.appId,0);
-
             } catch (Exception e) {
                 Log.e("googlePayWay","访问服务端="+e.getMessage());
                 e.printStackTrace();
             }
-
         }
-
         @Override
         public void onQueryError() {
             //查询错误
@@ -820,7 +797,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         OkGo.<HttpBaseResult<ResultBean>>post(AppUrl.GET_GOOGLEPAY_RESULT)
                 .tag(mContext)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<ResultBean>>() {
+                .execute(new JsonCallback<HttpBaseResult<ResultBean>>(context) {
                     @Override
                     public void onSuccess(Response<HttpBaseResult<ResultBean>> response) {
                    Log.e("googlePayWay","通知成功"+response.body().getResultInfo());
@@ -875,7 +852,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         return str;
     }
     private void getGooglePayInfo(Context context, String appId) {
-
         JSONObject jsonObject = new JSONObject();
         String data = "{}";
         try {
@@ -890,7 +866,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         OkGo.<HttpBaseResult<GooglePayInfoBean>>post(AppUrl.GET_GOOGLEPAY_INFO)
                 .tag(context)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>() {
+                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>(context) {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(Response<HttpBaseResult<GooglePayInfoBean>> response) {

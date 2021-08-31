@@ -108,7 +108,7 @@ if ( TgaSdk.listener!=null){
         TgaSdkUserInFo tgaSdkUserInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
         String version = Conctant.getVersion(getActivity());
         if (userInfo!=null&&tgaSdkUserInFo.getUserId()!=null){
-            TGA_URL = TgaSdk.gameCentreUrl+ "?txnid="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1"+"&nickname="+tgaSdkUserInFo.getNickname()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&head="+tgaSdkUserInFo.getAvatar();//无底部
+            TGA_URL = TgaSdk.gameCentreUrl+ "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1"+"&nickname="+tgaSdkUserInFo.getNickname()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
             if(lang!=null) {
                 TGA_URL =TGA_URL+ "&lang=" + urlEncode(lang)+"#/me";
             }else {

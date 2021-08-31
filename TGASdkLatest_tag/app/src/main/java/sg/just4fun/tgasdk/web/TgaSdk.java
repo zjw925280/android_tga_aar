@@ -1,17 +1,20 @@
 package sg.just4fun.tgasdk.web;
-
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.webkit.WebView;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.adapter.Call;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.PostRequest;
 
@@ -38,7 +41,7 @@ import sg.just4fun.tgasdk.tga.global.Global;
 import sg.just4fun.tgasdk.tga.ui.home.HomeActivity;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.tga.utils.SpUtils;
-
+//TGASDK初始化类
 public class TgaSdk {
     public static Context mContext;
     public static  TGACallback.TgaEventListener listener;
@@ -48,7 +51,6 @@ public class TgaSdk {
     public static String appPaymentKey;
     public static List<GooglePayInfoBean.GooglePayInfo> infoList=new ArrayList<>();
     public static  String appConfigList;
-
     public static TGACallback.initCallback initCallback;
     public static String applovnIdConfig;
     public static String gameCentreUrl;
@@ -58,7 +60,6 @@ public class TgaSdk {
     public static String iconpath;
     public static String packageName;
     public static String schemeUrl;
-
     private TgaSdk() {
 
     }
@@ -69,10 +70,10 @@ public class TgaSdk {
             return text;
         }
     }
-
-
+//TGASDK初始化方法
     public static void init(Context context,String appKey,String schemeUrl,String appPaymentKey,TGACallback.TgaEventListener listener,TGACallback.initCallback initCallback) {
         mContext = context.getApplicationContext();
+        MobileAds.initialize(mContext);
         TgaSdk.appKey= appKey;
         TgaSdk.schemeUrl= schemeUrl;
         TgaSdk.listener = listener;
@@ -81,11 +82,18 @@ public class TgaSdk {
         Log.e(TGA,"linitCallback是不是空了="+initCallback);
         TgaSdk.appPaymentKey = appPaymentKey;
         Log.e(TGA,"appPaymentKey是不是空了="+appPaymentKey);
+//        MobileAds.initialize(context, new OnInitializationCompleteListener() {
+//            @Override
+//            public void onInitializationComplete(InitializationStatus initializationStatus) {
+//                Gson gson = new Gson();
+//                String s = gson.toJson(initializationStatus);
+//                Log.e(TGA,"谷歌广告初始化="+ s);
+//            }
+//        });
 //       获取用户配置表
         getUserInfo(appKey);
     }
-
-
+// TGASDK拉取google支付配置
     private static void getGooglePayInfo(String appId) {
         JSONObject jsonObject = new JSONObject();
         String data = "{}";
@@ -100,7 +108,7 @@ public class TgaSdk {
         OkGo.<HttpBaseResult<GooglePayInfoBean>>post(AppUrl.GET_GOOGLEPAY_INFO)
                 .tag(mContext)
                 .upRequestBody(body)
-                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>() {
+                .execute(new JsonCallback<HttpBaseResult<GooglePayInfoBean>>(mContext) {
                     @Override
                     public void onSuccess(Response<HttpBaseResult<GooglePayInfoBean>> response) {
                         if (response.body().getStateCode() == 1) {
@@ -113,15 +121,12 @@ public class TgaSdk {
                      Log.e(TGA,"google支付配置失败="+response.message());
                     }
                 });
-
     }
-
     public static Context getContext() {
         return mContext;
     }
-
+    //进入TGAsdk游戏中心方法
     public static void goPage(Context context,final String url,boolean autoToken,String schemeQuery) {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +140,7 @@ public class TgaSdk {
                             String url="";
                             String userInfo = TgaSdk.listener.getUserInfo();
                             if(userInfo==null||userInfo.equals("")){
-                                Log.e(TGA,"用户信息为空");
+                                    Log.e(TGA,"用户信息为空");
                                     url= TgaSdk.gameCentreUrl+"?appId="+ TgaSdk.appId;//无底部
                                     Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("url",url);
@@ -143,7 +148,6 @@ public class TgaSdk {
                                     intent.putExtra("yssdk",0);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     context.startActivity(intent);
-
                             }else {
                                 Gson gson = new GsonBuilder().disableHtmlEscaping().create();
                                 TgaSdkUserInFo userInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
@@ -153,10 +157,9 @@ public class TgaSdk {
                                     TgaSdk.gameCentreUrl= Global.TEST_MOREN;
                                 }
                                 if (schemeQuery!=null&&!schemeQuery.equals("")){
-                                    url= TgaSdk.gameCentreUrl+ "?txnid="+ userInFo.getUserId()+"&"+schemeQuery+"&appId="+ TgaSdk.appId+"&nickname="+userInFo.getNickname()+"&msisdn="+userInFo.getUserId()+"&appversion="+version+"&head="+urlEncode(userInFo.getAvatar());//无底部
+                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ userInFo.getUserId()+"&"+schemeQuery+"&appId="+ TgaSdk.appId+"&nickname="+userInFo.getNickname()+"&msisdn="+userInFo.getUserId()+"&appversion="+version+"&avatar="+urlEncode(userInFo.getAvatar());//无底部
                                 }else {
-
-                                    url= TgaSdk.gameCentreUrl+ "?txnid="+ userInFo.getUserId()+"&appId="+ TgaSdk.appId+"&nickname="+userInFo.getNickname()+"&msisdn="+userInFo.getUserId()+"&appversion="+version+"&head="+urlEncode(userInFo.getAvatar());//无底部
+                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ userInFo.getUserId()+"&appId="+ TgaSdk.appId+"&nickname="+userInFo.getNickname()+"&msisdn="+userInFo.getUserId()+"&appversion="+version+"&avatar="+urlEncode(userInFo.getAvatar());//无底部
                                 }
                                 Intent intent = new Intent(context, HomeActivity.class);
                                 intent.putExtra("url",url);
@@ -204,9 +207,6 @@ public class TgaSdk {
         }
         return "";
     }
-
-
-
     //跳转游戏中心
     public static void goPage(Context context,String url,String gameid) {
        goPage(context, url, true,gameid);
@@ -215,39 +215,32 @@ public class TgaSdk {
     public static void goPage(Context context) {
         goPage(context, "",true,"");
     }
-
     //跳转游戏中心
     public static void goLink(Context context,String url) {
         goPage(context, url,true,"");
     }
-
     public static void shareSuccess(String uuid) {
         shared(uuid, true);
     }
-
     public static void shareError(String uuid) {
         shared(uuid, false);
     }
-
     public static void shared(String uuid, boolean success) {
         TGACallback.listener.shareCall(uuid, success);
     }
-
     public static void lang(String lang) {
         TGACallback.langListener.getLang(lang);
     }
-
     public static void shared(String uuid, int successCount) {
         shared(uuid, successCount > 0);
     }
-
     public static String requireNotBlankString(String value) {
         if(value == null || value.trim().equals("")) {
             return null;
         }
         return value;
     }
-
+//拉取SDK配置表
     public static void getUserInfo(String appKe){
         JSONObject jsonObject = new JSONObject();
         String data = "{}";
@@ -259,10 +252,10 @@ public class TgaSdk {
         }
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, data);
-        PostRequest post = OkGo.post(AppUrl.TGA_SDK_INFO);
-        post.tag(mContext);
-        post.upRequestBody(body);
-        post.execute(new JsonCallback<String>() {
+        OkGo.<String>post(AppUrl.TGA_SDK_INFO)
+        .tag(mContext)
+        .upRequestBody(body)
+        .execute(new JsonCallback<String>(mContext) {
             @Override
             public void onSuccess(Response response) {
                 String s1 = response.body().toString();
@@ -328,12 +321,10 @@ public class TgaSdk {
                                 isSuccess=0;
                                 initCallback.initError(mContext.getResources().getString(R.string.packagename));
                             }
-
                         }else {
                             isSuccess=0;
                             initCallback.initError("TgaEventListener接口为空");
                         }
-
                     } else {
                         isSuccess=0;
                         initCallback.initError("服务端errorCode=" + httpBaseResult.getStateCode());
@@ -344,7 +335,6 @@ public class TgaSdk {
                     Log.e("tgasdk", "initiate failed", e);
                 }
             }
-
             @Override
             public void onError(Response response) {
                 isSuccess=0;

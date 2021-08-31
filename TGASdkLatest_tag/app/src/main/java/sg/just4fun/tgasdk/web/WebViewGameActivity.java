@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -27,9 +28,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.h5.H5AdsWebViewClient;
 import com.smarx.notchlib.NotchScreenManager;
 
 import org.json.JSONException;
@@ -57,6 +60,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     public static boolean statusaBar;
     private static String TGA="WebViewGameActivity";
     public static LollipopFixedWebView add_view;
+    public static WindowManager.LayoutParams lp;
     private String url;
    private int isFrist=0;
     private LollipopFixedWebView newWebView;
@@ -74,6 +78,8 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     public static TextView tv_stuasbar;
     private String statusaBarColor;
     private int yssdk;
+    public static RelativeLayout relayout_web;
+    private H5AdsWebViewClient h5AdsWebViewClient;
 
     public static String urlEncode(String text) {
         try{
@@ -88,21 +94,21 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view_game);
-
         NotchScreenManager.getInstance().setDisplayInNotch(WebViewGameActivity.this);
         SdkActivityDele.addActivity(WebViewGameActivity.this);
         img_loading = findViewById(R.id.img_loading);
         rl_loading = findViewById(R.id.rl_loading);
+        relayout_web = findViewById(R.id.relayout_web);
+
         add_view = findViewById(R.id.add_view1);
         image_black = findViewById(R.id.image_black);
         tv_webtitle = findViewById(R.id.tv_webtitle);
         relayout = findViewById(R.id.relayout);
         tv_stuasbar = findViewById(R.id.tv_stuasbar);
 
-//        banner_web = findViewById(R.id.banner_web);
+//      banner_web = findViewById(R.id.banner_web);
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
-
         gopag = intent.getIntExtra("gopag", -1);
         statusaBar = intent.getBooleanExtra("statusaBar",true);
         navigationBar = intent.getBooleanExtra("navigationBar",false);
@@ -119,7 +125,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
             }else {
                 statusaBarColor="#23D3BE";
             }
-
             tv_stuasbar.setBackgroundColor(Color.parseColor(statusaBarColor));
         }
         if (backgroundColor!=null){
@@ -129,8 +134,12 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
             relayout.setBackgroundColor(Color.parseColor(backgroundColor));
 
         }
-//状态栏显示或者掩藏
-        full(statusaBar);
+            if (statusaBar){
+                tv_stuasbar.setVisibility(View.VISIBLE);
+            }else {
+                tv_stuasbar.setVisibility(View.GONE);
+            }
+        full(statusaBar,this);
         image_black.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,21 +187,20 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     public static int getStatusBarHeight(Context context) {
         return getDimensionPixel(context, "status_bar_height");
     }
-    private void full(boolean enable) {
+    public static void full(boolean enable,Activity context) {
+        Log.e(TGA,"掩藏显示"+enable);
         if (enable) {//显示
-            tv_stuasbar.setVisibility(View.VISIBLE);
-            WindowManager.LayoutParams attr = getWindow().getAttributes();
+            WindowManager.LayoutParams attr = context.getWindow().getAttributes();
             attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            getWindow().setAttributes(attr);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            transparencyBar(WebViewGameActivity.this);
+            context.getWindow().setAttributes(attr);
+            context.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            transparencyBar(context);
         } else {//掩藏
-            tv_stuasbar.setVisibility(View.GONE);
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            Log.e(TGA,"掩藏代码执行了"+enable);
+            lp =context.getWindow().getAttributes();
             lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            getWindow().setAttributes(lp);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
+            context. getWindow().setAttributes(lp);
+            context. getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
     }
@@ -218,24 +226,17 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
-
-        } else
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window =activity.getWindow();
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
-
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         FacebookTpBean.callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
     private void upWebview(int pag,String lang, WebView webView) {
         Glide.with(WebViewGameActivity.this).load(R.mipmap.gif)
                 .into(img_loading);
@@ -245,6 +246,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                 @Override
                 public void run() {
                     runOnUiThread(new Runnable(){
+                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
                             String info = TgaSdk.listener.getUserInfo();
@@ -262,49 +264,64 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                                 url=url+"&lang="+lang;
                             }
                             Log.e(TGA,"lang="+lang+"   url="+url);
-                            initWebView(add_view);
+                            initWebView(webView);
                             Log.e(TGA,"地址"+url);
                             webView.loadUrl(url);
-                            webView.setWebViewClient(new WebViewClient() {
+
+                            WebSettings webSetting = add_view.getSettings();
+                            webSetting.setJavaScriptEnabled(true);
+                            h5AdsWebViewClient = new H5AdsWebViewClient(WebViewGameActivity.this, webView);
+                            WebViewClient pubWebViewClient=new WebViewClient(){
                                 @Override
                                 public void onPageStarted(WebView view, String url, Bitmap favicon) {
                                     super.onPageStarted(view, url, favicon);
                                     rl_loading.setVisibility(View.GONE);
-
-                                    Log.e(TGA,"onPageStarted="+url);
-                                    if (!url.startsWith(url) && !url.contains("paypal")) {
-//                    alertDialog.show();
-//                    alertDialog.getWindow().setBackgroundDrawableResource(R.color.translucent_background);
-//                    alertDialog.getWindow().setLayout(ScreenUtils.getScreenWidth(HomeActivity.this), ScreenUtils.getScreenHeight(HomeActivity.this));
-                                    }
+                                    Log.e(TGA,"WebView"+view+"  url="+url+" Bitma="+favicon);
                                 }
                                 @Override
                                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                                    Log.e("执行","shouldOverrideUrlLoading="+url);
-                                    //                if (Uri.parse(url).getHost().equals("data.just4fun.sg")) {
                                     Uri uri = Uri.parse(url);
                                     add_view.loadUrl(uri.toString());
+                                    Log.e(TGA,"WebView"+view+"  url="+url);
                                     return false;
                                 }
-
                                 @Override
                                 public void onPageFinished(WebView webView, String url) {
                                     super.onPageFinished(webView, url);
                                     Log.e("执行","onPageFinished="+url);
-                                    Log.d("TGA_URL", "url fininshed : " + url + ", webview.orgurl=" + webView.getOriginalUrl() +", webview.url = " + webView.getUrl());
+                                    Log.e(TGA,"WebView"+webView+"  url="+url);
                                 }
-                            });
-
+                            };
+                            h5AdsWebViewClient.setDelegateWebViewClient(pubWebViewClient);
+                            add_view.setWebViewClient(h5AdsWebViewClient);
+//                            webView.setWebViewClient(new WebViewClient() {
+//                                @Override
+//                                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//                                    super.onPageStarted(view, url, favicon);
+//
+//                                    rl_loading.setVisibility(View.GONE);
+//
+//                                }
+//                                @Override
+//                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                                    Uri uri = Uri.parse(url);
+//                                    add_view.loadUrl(uri.toString());
+//                                    return false;
+//                                }
+//
+//                                @Override
+//                                public void onPageFinished(WebView webView, String url) {
+//                                    super.onPageFinished(webView, url);
+//                                    Log.e("执行","onPageFinished="+url);
+//                                }
+//                            });
                             webView.setWebChromeClient(new WebChromeClient() {
                                                            @Override
                                                            public void onCloseWindow(WebView window) {
                                                                super.onCloseWindow(window);
                                                                if (newWebView != null) {
-
-
                                                                }
                                                            }
-
                                                            @Override
                                                            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
 
@@ -324,8 +341,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
 
                                                                return true;
                                                            }
-
-
                                 @Override
                                 public void onReceivedTitle(WebView view, String title) {
                                     super.onReceivedTitle(view, title);
@@ -333,25 +348,20 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                                     tv_webtitle.setText(title);
                                 }
                         }
-
                             );
-
-
                         }
                     });
 
                 }
             }).start();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {////h5谷歌调试
-                add_view.setWebContentsDebuggingEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//h5谷歌调试
+                webView.setWebContentsDebuggingEnabled(true);
             }
             JavaScriptinterface tgaBridge = new JavaScriptinterface(WebViewGameActivity.this, url);
-            tgaBridge.init(add_view); //初始化所有需要BRIDGE的SDK
-            TgaAdSdkUtils.registerTgaWebview(this.add_view);
+            tgaBridge.init(webView); //初始化所有需要BRIDGE的SDK
+            TgaAdSdkUtils.registerTgaWebview(webView);
         }
     }
-
-
     private void initWebView(WebView webView ) {
         WebSettings webSetting = webView.getSettings();
         webSetting.setAllowFileAccess(true);
@@ -376,14 +386,9 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            add_view.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
     }
-
-
-
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -401,15 +406,13 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                 }
             }
         });
-
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         TGACallback.setShareCallback(this);
         if (isFrist>1){
-            if(this.add_view != null) { //每次唤醒都要重新注册当前webview到广告控件
+            if(this.add_view != null) {//每次唤醒都要重新注册当前webview到广告控件
                 TgaAdSdkUtils.registerTgaWebview(this.add_view);
             }
             Log.e(TGA,"第二次isFrist="+isFrist);
@@ -418,8 +421,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
 //            GoPageUtils.finishActivityEvents(add_view);
         }
     }
-
-
     @Override
     public void shareCall(String uuid, boolean success) {
         Log.e(TGA,"webvigame="+uuid+" 成功=="+success);
@@ -438,7 +439,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     protected void onStop() {
         super.onStop();
     }
-
     @Override
     protected void onDestroy() {
       if(add_view!=null){
