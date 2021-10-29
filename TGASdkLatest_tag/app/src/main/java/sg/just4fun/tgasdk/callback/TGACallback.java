@@ -8,6 +8,7 @@ import sg.just4fun.tgasdk.modle.UserInFoBean;
 public class TGACallback {
     public static ShareCallback listener;
     public static LangCallback langListener;
+    public static FightGameCallback fightGameListener;
 
     public interface initCallback {
         void initSucceed();
@@ -50,6 +51,15 @@ public class TGACallback {
 
     public static void setShareCallback(ShareCallback listener) {
         TGACallback.listener = listener;
+    }
+
+
+    public interface FightGameCallback {
+        void fightGameCall();
+    }
+
+    public static void setFightGameCallback(FightGameCallback fightGameListener) {
+        TGACallback.fightGameListener = fightGameListener;
     }
 
 }

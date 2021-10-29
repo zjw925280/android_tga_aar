@@ -19,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -89,6 +90,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"WrongViewCast", "ResourceType"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,11 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         tv_webtitle = findViewById(R.id.tv_webtitle);
         relayout = findViewById(R.id.relayout);
         tv_stuasbar = findViewById(R.id.tv_stuasbar);
+
+//
+//        if (Build.VERSION.SDK_INT >= 11) {
+//            add_view.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+//                 }
 
 //      banner_web = findViewById(R.id.banner_web);
         Intent intent = getIntent();
@@ -179,7 +186,12 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                 }
             }
         }
+        add_view.evaluateJavascript("", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String value) {
 
+            }
+        });
     }
     /**
      * 获取statusBar的高度
@@ -432,12 +444,21 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     public void onBackPressed() {
         Log.e(TGA,"onBackPressed");
         GoogleBillingUtil.cleanListener();
+        if(  TGACallback.fightGameListener!=null){
+
+            TGACallback.fightGameListener.fightGameCall();
+        }
         super.onBackPressed();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.e(TGA,"onStop");
+
+        if(TGACallback.fightGameListener!=null){
+            TGACallback.fightGameListener.fightGameCall();
+        }
     }
     @Override
     protected void onDestroy() {
@@ -449,4 +470,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
        }
         super.onDestroy();
     }
+
+
 }

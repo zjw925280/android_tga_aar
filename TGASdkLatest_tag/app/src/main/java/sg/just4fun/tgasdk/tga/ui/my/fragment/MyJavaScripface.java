@@ -453,7 +453,6 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
             Log.e("分享","inAppShare="+options);
             AppShareInFo shareInFo = gson.fromJson(options, AppShareInFo.class);
             if (TgaSdk.listener!=null){
-
                 TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
                 String userInfo = SpUtils.getString(context, "userInfo", "");
                 Gson gson1 = new Gson();

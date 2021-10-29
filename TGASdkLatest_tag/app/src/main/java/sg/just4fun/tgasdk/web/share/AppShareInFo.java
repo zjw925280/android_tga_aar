@@ -20,9 +20,17 @@ public class AppShareInFo implements TgaSdkJsonEntity {
     private String icon;
     private String title;
     private String url;
-    private String type="inapp";
     private String hidebar;
+    private int type;
+    private int number;
 
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public String getCode() {
         return code;
@@ -40,11 +48,11 @@ public class AppShareInFo implements TgaSdkJsonEntity {
         this.hidebar = hidebar;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
@@ -124,7 +132,7 @@ public class AppShareInFo implements TgaSdkJsonEntity {
         } catch(Exception e) {
         }
         try{
-            this.type = jsonObject.getString("type");
+            this.type = jsonObject.getInt("type");
         } catch(Exception e) {
         }
         try{

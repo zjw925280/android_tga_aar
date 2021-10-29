@@ -1,7 +1,9 @@
 package sg.just4fun.tgasdk.web;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 import android.webkit.WebView;
 
@@ -24,6 +26,7 @@ import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,6 +35,8 @@ import okhttp3.RequestBody;
 import sg.just4fun.tgasdk.R;
 import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.conctart.Conctant;
+import sg.just4fun.tgasdk.modle.BipGameUserInfo;
+import sg.just4fun.tgasdk.modle.GameListInfoBean;
 import sg.just4fun.tgasdk.modle.GooglePayInfoBean;
 import sg.just4fun.tgasdk.modle.UserInFoBean;
 import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
@@ -60,6 +65,13 @@ public class TgaSdk {
     public static String iconpath;
     public static String packageName;
     public static String schemeUrl;
+    private static String skdjskd;
+    private static String lang;
+    public static List<GameListInfoBean.GameinfoBean> gameif=new ArrayList<>();
+    public static String bipUserid;
+    public static String bipToken;
+    public static String rebipToken;
+
     private TgaSdk() {
 
     }
@@ -73,7 +85,10 @@ public class TgaSdk {
 //TGASDK初始化方法
     public static void init(Context context,String appKey,String schemeUrl,String appPaymentKey,TGACallback.TgaEventListener listener,TGACallback.initCallback initCallback) {
         mContext = context.getApplicationContext();
-        MobileAds.initialize(mContext);
+//        String metaDataStringApplication = Conctart.getMetaDataStringApplication((Activity) mContext, "com.google.android.gms.ads.APPLICATION_ID", "");
+//       if(!metaDataStringApplication.equals("")){
+           MobileAds.initialize(mContext);
+//       }
         TgaSdk.appKey= appKey;
         TgaSdk.schemeUrl= schemeUrl;
         TgaSdk.listener = listener;
@@ -122,6 +137,224 @@ public class TgaSdk {
                     }
                 });
     }
+    // TGASDK获取游戏token
+    private static void userCodeLogin(String pkName,UserInFoBean resultInfo,Gson gson){
+        String  fpId = Settings.System.getString(mContext.getContentResolver(), Settings.System.ANDROID_ID);
+        String data="{}";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("fpId",fpId);
+            if (listener!=null){
+                String userInfo = listener.getUserInfo();
+                jsonObject.put("code",userInfo);
+//                TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
+//                try {
+//                    JSONObject jsonObject1 = new JSONObject(userInfo);
+//                    userInFo.fromJson(jsonObject1);
+//                    jsonObject.put("txnId",userInFo.getUserId());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+            }
+//            jsonObject.put("type",13);
+            data = jsonObject.toString();
+            Log.e(TGA,"参数json"+data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, data);
+        OkGo.<HttpBaseResult<BipGameUserInfo>>post(AppUrl.GAME_BIP_CODE_SDK_USER_INFO)
+                .tag(mContext)
+                .headers("appId",appId)
+                .upRequestBody(body)
+                .execute(new JsonCallback<HttpBaseResult<BipGameUserInfo>>(mContext) {
+                    @Override
+                    public void onSuccess(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        if (response.body().getStateCode() == 1) {
+
+                            svanTokenInfo(response);
+
+                            initCodeTokenInfo(pkName, resultInfo, gson, R.string.packagename, R.string.packagename);
+//
+                            Log.e(TGA,"获取1v1游戏列表token"+response.body().getResultInfo().getAccessToken());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        Log.e(TGA,"获取1v1游戏列表token失败"+response.getException().getMessage());
+                    }
+                });
+    }
+
+    private static void initCodeTokenInfo(String pkName, UserInFoBean resultInfo, Gson gson, int p, int p2) {
+        if (packageName != null && !packageName.equals("")) {
+            if (packageName.equals(pkName)) {
+                iconpath = resultInfo.getIconpath();
+                appConfigList = resultInfo.getAppConfig();
+                if (appConfigList != null && !appConfigList.equals("") && !appConfigList.equals("{}")) {
+                    UserInFoBean.AppConfig adConfigBean = gson.fromJson(appConfigList, UserInFoBean.AppConfig.class);
+                    try {
+                        gameCentreUrl = Objects.requireNonNull(requireNotBlankString(adConfigBean.getGameCentreUrl()));
+                    } catch (Exception e) {
+                        gameCentreUrl = Global.TEST_MOREN;
+                    }
+                    if (adConfigBean != null) {
+                        List<UserInFoBean.AdConfigBean> adList = adConfigBean.getAd();
+                        if (adList == null || adList.isEmpty()) {
+                            applovnIdConfig = null;
+                        } else {
+                            Log.e("tgasdk", "ad配置表==" + adList.size());
+                            try {
+                                applovnIdConfig = adList.get(0).getConfig().toJson().toString();
+                            } catch (Exception e2) {
+                                applovnIdConfig = null;
+                            }
+                            Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
+                        }
+                    }
+                } else {
+                    gameCentreUrl = Global.TEST_MOREN;
+                }
+                getGooglePayInfo(appId);
+                Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
+                isSuccess = 1;
+                initCallback.initSucceed();
+            } else {
+                Log.e(TGA, "包名不一致=");
+                isSuccess = 0;
+                initCallback.initError(mContext.getResources().getString(p));
+            }
+        } else {
+            Log.e(TGA, "包名不一致=");
+            isSuccess = 0;
+            initCallback.initError(mContext.getResources().getString(p2));
+        }
+    }
+
+    // TGASDK获取游戏token
+    private static void gameUserLogin(String pkName,UserInFoBean resultInfo,Gson gson){
+    String  fpId = Settings.System.getString(mContext.getContentResolver(), Settings.System.ANDROID_ID);
+        String data="{}";
+        JSONObject jsonObject = new JSONObject();
+        try {
+//            if (listener!=null){
+//                String userInfo = listener.getUserInfo();
+//                TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
+//                try {
+//                    JSONObject jsonObject1 = new JSONObject(userInfo);
+//                    userInFo.fromJson(jsonObject1);
+//                    jsonObject.put("txnId",userInFo.getUserId());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            jsonObject.put("fpId",fpId);
+            jsonObject.put("appId",appId);
+            data = jsonObject.toString();
+            Log.e(TGA,"参数json"+data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, data);
+        OkGo.<HttpBaseResult<BipGameUserInfo>>post(AppUrl.GAME_BIP_LOGIN_SDK)
+                .tag(mContext)
+                .upRequestBody(body)
+                .execute(new JsonCallback<HttpBaseResult<BipGameUserInfo>>(mContext) {
+                    @Override
+                    public void onSuccess(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        if (response.body().getStateCode() == 1) {
+                            svanTokenInfo(response);
+                            Log.e(TGA,"获取1v1游戏列表token"+response.body().getResultInfo().getAccessToken());
+                            initCodeTokenInfo(pkName, resultInfo, gson, R.string.packagename, R.string.packagename);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        Log.e(TGA,"获取1v1游戏列表token失败"+response.getException().getMessage());
+                    }
+                });
+    }
+
+    private static void svanTokenInfo(Response<HttpBaseResult<BipGameUserInfo>> response) {
+        bipUserid =String.valueOf(response.body().getResultInfo().getUser().getId()) ;
+        bipToken = response.body().getResultInfo().getAccessToken();
+        rebipToken = response.body().getResultInfo().getRefreshToken();
+        BipGameUserInfo.BipGameUserUser user = response.body().getResultInfo().getUser();
+        SpUtils.putString(mContext,"bipHeader",user.getHeader());
+        SpUtils.putString(mContext,"bipName",user.getName());
+        SpUtils.putString(mContext,"bipTxnId",user.getTxnId());
+        SpUtils.putString(mContext,"bipToken", response.body().getResultInfo().getAccessToken());
+        SpUtils.putString(mContext,"bipUserId",String.valueOf(response.body().getResultInfo().getUser().getId()));
+        SpUtils.putString(mContext,"reBipToken",String.valueOf(response.body().getResultInfo().getRefreshToken()));
+        getGameListHttp(appId, response.body().getResultInfo().getAccessToken());
+
+    }
+
+
+    // TGASDK拉取游戏列表
+    private static void getGameListHttp(String appId,String accessToken) {
+        String lang1 = listener.getLang();
+        if (lang1==null||lang1.equals("")){
+            String local = Locale.getDefault().toString();
+             lang= Conctart.toStdLang(local);
+        }else {
+               lang=lang1;
+        }
+        JSONObject jsonObject = new JSONObject();
+        String data = "{}";
+        try {
+            jsonObject.put("tag", "battle_1v1");
+            data = jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, data);
+        OkGo.<HttpBaseResult<GameListInfoBean>>post(AppUrl.GET_GAME_LIST)
+                .tag(mContext)
+                .headers("Authorization",accessToken)//
+                .headers("appId",appId)//
+                .headers("lang",lang)
+                .upRequestBody(body)
+                .execute(new JsonCallback<HttpBaseResult<GameListInfoBean>>(mContext) {
+                    @Override
+                    public void onSuccess(Response<HttpBaseResult<GameListInfoBean>> response) {
+                        if (response.body().getStateCode() == 1) {
+                             gameif = response.body().getResultInfo().getData();
+                             Log.e(TGA,"1V1游戏列表数据="+gameif);
+                            String lang1 = listener.getLang();
+                            if (lang1==null||lang1.equals("")){
+                                String local = Locale.getDefault().toString();
+                                lang= Conctart.toStdLang(local);
+                            }else {
+                                lang=lang1;
+                            }
+                            for (int a=0;a<gameif.size();a++){
+                                Log.e(TGA,"1V1游戏列表数据="+gameif.get(a).getName());
+                                String s = Conctant.gameName(lang, gameif.get(a).getName());
+                                gameif.get(a).setName(s);
+                                Log.e(TGA,"1V1游戏列表数据name="+s);
+                                String s1 = Conctant.gameName(lang, gameif.get(a).getRemark());
+                                gameif.get(a).setRemark(s1);
+                                Log.e(TGA,"1V1游戏列表数据remark="+s1);
+                            }
+                        }
+                    }
+                    @Override
+                    public void onError(Response<HttpBaseResult<GameListInfoBean>> response) {
+                        Log.e(TGA,"1V1游戏列表数据失败="+response.getException().getMessage());
+
+                    }
+                });
+    }
     public static Context getContext() {
         return mContext;
     }
@@ -131,6 +364,11 @@ public class TgaSdk {
             @Override
             public void run() {
 //                String yhAppId = SpUtils.getString(mContext, "yhAppId", "");
+                String bipHeader = SpUtils.getString(mContext, "bipHeader", "");
+                String bipName = SpUtils.getString(mContext, "bipName", "");
+                String bipTxnId = SpUtils.getString(mContext, "bipTxnId", "");
+                String bipToken = SpUtils.getString(mContext, "bipToken", "");
+                String reBipToken = SpUtils.getString(mContext, "reBipToken", "");
                 if (url==null||url.equals("")){
                     String version = Conctant.getVersion(mContext);
                     if (isSuccess==1){
@@ -141,7 +379,7 @@ public class TgaSdk {
                             String userInfo = TgaSdk.listener.getUserInfo();
                             if(userInfo==null||userInfo.equals("")){
                                     Log.e(TGA,"用户信息为空");
-                                    url= TgaSdk.gameCentreUrl+"?appId="+ TgaSdk.appId;//无底部
+                                    url= TgaSdk.gameCentreUrl+"?appId="+ TgaSdk.appId+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
                                     Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("url",url);
                                     intent.putExtra("gopag",0);
@@ -149,17 +387,16 @@ public class TgaSdk {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     context.startActivity(intent);
                             }else {
-                                Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-                                TgaSdkUserInFo userInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
-                                Log.e(TGA,"用户信息不为空"+userInFo.getNickname());
+//                                Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+//                                TgaSdkUserInFo userInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
                                 Log.e(TGA,"游戏中心列表="+TgaSdk.gameCentreUrl);
                                 if (TgaSdk.gameCentreUrl==null||TgaSdk.gameCentreUrl.equals("")){
                                     TgaSdk.gameCentreUrl= Global.TEST_MOREN;
                                 }
                                 if (schemeQuery!=null&&!schemeQuery.equals("")){
-                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ userInFo.getUserId()+"&"+schemeQuery+"&appId="+ TgaSdk.appId+"&nickname="+userInFo.getNickname()+"&msisdn="+userInFo.getUserId()+"&appversion="+version+"&avatar="+urlEncode(userInFo.getAvatar());//无底部
+                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&"+schemeQuery+"&appId="+ TgaSdk.appId+"&nickname="+bipName+"&msisdn="+bipTxnId+"&token="+bipToken+"&refresh-token="+reBipToken+"&appversion="+version+"&avatar="+bipHeader;//无底部
                                 }else {
-                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ userInFo.getUserId()+"&appId="+ TgaSdk.appId+"&nickname="+userInFo.getNickname()+"&msisdn="+userInFo.getUserId()+"&appversion="+version+"&avatar="+urlEncode(userInFo.getAvatar());//无底部
+                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&appId="+ TgaSdk.appId+"&nickname="+bipName+"&token="+bipToken+"&refresh-token="+reBipToken+"&msisdn="+bipTxnId+"&appversion="+version+"&avatar="+bipHeader;//无底部
                                 }
                                 Intent intent = new Intent(context, HomeActivity.class);
                                 intent.putExtra("url",url);
@@ -231,6 +468,8 @@ public class TgaSdk {
     public static void lang(String lang) {
         TGACallback.langListener.getLang(lang);
     }
+
+
     public static void shared(String uuid, int successCount) {
         shared(uuid, successCount > 0);
     }
@@ -240,6 +479,9 @@ public class TgaSdk {
         }
         return value;
     }
+
+
+
 //拉取SDK配置表
     public static void getUserInfo(String appKe){
         JSONObject jsonObject = new JSONObject();
@@ -278,49 +520,18 @@ public class TgaSdk {
                              packageName = resultInfo.getPackageName();
                             //包名相等
                             appId = resultInfo.getAppId();
+//                            获取游戏token
+//                            gameUserLogin();
+//                            通过code获取用户信息
+                            String userInfo = listener.getUserInfo();
                             SpUtils.putString(mContext,"yhAppId",appId);
-                            if (packageName !=null&&!packageName.equals("")){
-                                if (packageName.equals(pkName)){
-                                    iconpath = resultInfo.getIconpath();
-                                    appConfigList = resultInfo.getAppConfig();
-                                    if(appConfigList!=null&&!appConfigList.equals("")&&!appConfigList.equals("{}")){
-                                        UserInFoBean.AppConfig adConfigBean = gson.fromJson(appConfigList, UserInFoBean.AppConfig.class);
-                                        try{
-                                            gameCentreUrl = Objects.requireNonNull(requireNotBlankString(adConfigBean.getGameCentreUrl()));
-                                        }catch (Exception e){
-                                            gameCentreUrl= Global.TEST_MOREN;
-                                        }
-                                        if (adConfigBean!=null){
-                                            List<UserInFoBean.AdConfigBean> adList =  adConfigBean.getAd();
-                                            if(adList == null || adList.isEmpty()) {
-                                                applovnIdConfig = null;
-                                            } else {
-                                                Log.e("tgasdk", "ad配置表==" + adList.size());
-                                                try{
-                                                    applovnIdConfig = adList.get(0).getConfig().toJson().toString();
-                                                } catch (Exception e2) {
-                                                    applovnIdConfig = null;
-                                                }
-                                                Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
-                                            }
-                                        }
-                                    }else {
-                                        gameCentreUrl= Global.TEST_MOREN;
-                                    }
-                                    getGooglePayInfo(appId);
-                                    Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
-                                    isSuccess=1;
-                                    initCallback.initSucceed();
-                                }else {
-                                    Log.e(TGA,"包名不一致=");
-                                    isSuccess=0;
-                                    initCallback.initError(mContext.getResources().getString(R.string.packagename));
-                                }
+                            if(userInfo!=null&&!userInfo.equals("")){
+                                userCodeLogin(pkName,resultInfo,gson);
                             }else {
-                                Log.e(TGA,"包名不一致=");
-                                isSuccess=0;
-                                initCallback.initError(mContext.getResources().getString(R.string.packagename));
+                                gameUserLogin(pkName,resultInfo,gson);
                             }
+
+
                         }else {
                             isSuccess=0;
                             initCallback.initError("TgaEventListener接口为空");
@@ -356,4 +567,21 @@ public class TgaSdk {
         }
    }
 
+    public static List<GameListInfoBean.GameinfoBean> getGameList(){
+        Log.e(TGA,"1V1游戏列表数据getGameList="+new Gson().toJson(gameif));
+        return gameif;
+    }
+
+    public static String getBipUserInfo(){
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userId", bipUserid);
+            jsonObject.put("token", bipToken);
+            jsonObject.put("retoken", rebipToken);
+            return jsonObject.toString() ;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+      return "获取错误";
+    }
 }

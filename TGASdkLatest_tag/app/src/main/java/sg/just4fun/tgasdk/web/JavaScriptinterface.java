@@ -151,7 +151,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
              }
          }
 
-         metaDataStringApplication1 = Conctart.getMetaDataStringApplication(context,"applovin.sdk.key", "");
+          metaDataStringApplication1 = Conctart.getMetaDataStringApplication(context,"applovin.sdk.key", "");
         Log.d("tgasdk-js", "Apploving Init Begin");
         Log.d(TGA, "apploving="+metaDataStringApplication1);
 
@@ -171,6 +171,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
 
             try{
                 if(TgaSdk.applovnIdConfig!=null){
+                    Log.e("apploving初始化","apploving初始化");
                     apploving = new ApplovinApiBean(context, webview, tgaUrl);
                     apploving.initSdk();
                 }
@@ -333,11 +334,14 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
 
     @JavascriptInterface
     public void showApplovinAd(String uuid, String adType) {
+        Log.e("apploving初始化","showApplovinAd");
         Log.d(apploving.getTag(), "showApplovingAd(" + uuid + "," + adType + ")");
         Log.d("eZx4Pox", "showApplovingAd(" + uuid + "," + adType + ")");
         if(!metaDataStringApplication1.equals("")){
+            Log.e("apploving初始化","metaDataStringApplication1");
             if (TgaSdk.applovnIdConfig!=null){
                 apploving.showAd(uuid, adType);
+                Log.e("apploving初始化","TgaSdk.applovnIdConfig");
             }
         }
 
@@ -366,6 +370,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
 
     @JavascriptInterface
     public void showApplovinBannerAd(String uuid, String params) {
+        Log.e("apploving初始化","showApplovinBannerAd");
         Log.d(apploving.getTag(), "showApplovinBannerAd(" + uuid + "," + params + ")");
 //        Log.d("eZx4Pox", "showApplovinBannerAd(" + uuid + "," + params + ")");
 //        apploving.showBannerAd(uuid, "banner", params);
@@ -470,8 +475,9 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
             Gson gson = new Gson();
             Log.e("分享","inAppShare="+options);
             AppShareInFo shareInFo = gson.fromJson(options, AppShareInFo.class);
-            if (TgaSdk.listener!=null){
 
+            if (TgaSdk.listener!=null){
+//            if (shareInFo.getType()==0){//分享
                 TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
                 String userInfo = SpUtils.getString(context, "userInfo", "");
                 Gson gson1 = new Gson();
@@ -483,6 +489,10 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                     userInFo.fromJson(jsonObject);
                 }
 
+//            }else if (shareInFo.getType()==1){//邀请游戏
+//
+//
+//            }
             }
         } catch (Exception e) {
             e.printStackTrace();
