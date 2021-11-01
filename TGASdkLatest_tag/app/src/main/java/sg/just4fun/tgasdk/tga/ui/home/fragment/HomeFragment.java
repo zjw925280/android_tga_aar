@@ -31,7 +31,6 @@ import sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils;
 import sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean;
 import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.conctart.Conctant;
-import sg.just4fun.tgasdk.tga.global.Global;
 import sg.just4fun.tgasdk.tga.mvp.MvpFragment;
 import sg.just4fun.tgasdk.tga.mvp.MvpPresenter;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
@@ -123,7 +122,7 @@ public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallb
         initWebView(add_view);
         rl_loading.setVisibility(View.VISIBLE);
 
-        String userInfo = TgaSdk.listener.getUserInfo();
+        String userInfo = TgaSdk.listener.getAuthCode();
         Log.e("头像","头像="+userInfo);
         SpUtils.putString(getActivity(),"userInfo",userInfo);
         Gson gson = new Gson();

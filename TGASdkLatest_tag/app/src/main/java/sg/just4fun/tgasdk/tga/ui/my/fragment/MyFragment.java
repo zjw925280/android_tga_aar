@@ -103,7 +103,7 @@ if ( TgaSdk.listener!=null){
                 .into(img_loading);
         initWebView();
         rl_loading.setVisibility(View.VISIBLE);
-        String  userInfo = TgaSdk.listener.getUserInfo();
+        String  userInfo = TgaSdk.listener.getAuthCode();
         Gson gson = new Gson();
         TgaSdkUserInFo tgaSdkUserInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
         String version = Conctant.getVersion(getActivity());

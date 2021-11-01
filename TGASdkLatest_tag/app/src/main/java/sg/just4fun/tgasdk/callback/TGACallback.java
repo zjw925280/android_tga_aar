@@ -21,7 +21,7 @@ public class TGACallback {
 
         }
 
-        String getUserInfo();
+        String getAuthCode();
 
         void onInAppShare(Context context, String uuid, String iconUrl, String link, String title, String type);
 //      void onInAppPay(Context context);

@@ -15,14 +15,12 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -248,7 +246,7 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
                 .into(img_loading);
         rl_loading.setVisibility(View.VISIBLE);
         if (TgaSdk.listener != null) {
-                            String info = TgaSdk.listener.getUserInfo();
+                            String info = TgaSdk.listener.getAuthCode();
                             SpUtils.putString(HomeActivity.this, "userInfo", info);
                             TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
                             try {

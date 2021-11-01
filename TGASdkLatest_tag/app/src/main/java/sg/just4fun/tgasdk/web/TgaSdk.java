@@ -1,24 +1,15 @@
 package sg.just4fun.tgasdk.web;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
-import android.webkit.WebView;
 
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.lzy.okgo.OkGo;
-import com.lzy.okgo.adapter.Call;
-import com.lzy.okgo.cache.CacheMode;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.Response;
-import com.lzy.okgo.request.PostRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +18,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import okhttp3.MediaType;
@@ -145,7 +135,7 @@ public class TgaSdk {
         try {
             jsonObject.put("fpId",fpId);
             if (listener!=null){
-                String userInfo = listener.getUserInfo();
+                String userInfo = listener.getAuthCode();
                 jsonObject.put("code",userInfo);
 //                TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
 //                try {
@@ -376,7 +366,7 @@ public class TgaSdk {
                         if (TgaSdk.listener!=null){
                             Log.e(TGA,"TgaSdk.listener不为空");
                             String url="";
-                            String userInfo = TgaSdk.listener.getUserInfo();
+                            String userInfo = TgaSdk.listener.getAuthCode();
                             if(userInfo==null||userInfo.equals("")){
                                     Log.e(TGA,"用户信息为空");
                                     url= TgaSdk.gameCentreUrl+"?appId="+ TgaSdk.appId+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
@@ -523,7 +513,7 @@ public class TgaSdk {
 //                            获取游戏token
 //                            gameUserLogin();
 //                            通过code获取用户信息
-                            String userInfo = listener.getUserInfo();
+                            String userInfo = listener.getAuthCode();
                             SpUtils.putString(mContext,"yhAppId",appId);
                             if(userInfo!=null&&!userInfo.equals("")){
                                 userCodeLogin(pkName,resultInfo,gson);

@@ -3,10 +3,8 @@ package sg.just4fun.tgasdk.web;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -40,7 +37,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
-import java.util.LinkedList;
 import java.util.Locale;
 
 import sg.just4fun.tgasdk.R;
@@ -49,11 +45,7 @@ import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.conctart.SdkActivityDele;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.tga.utils.SpUtils;
-import sg.just4fun.tgasdk.tga.view.MyWebView;
-import sg.just4fun.tgasdk.tga.view.immersionbar.ImmersionBar;
 import sg.just4fun.tgasdk.tpsdk.facebook.FacebookTpBean;
-import sg.just4fun.tgasdk.web.goPage.GoPageInfo;
-import sg.just4fun.tgasdk.web.goPage.GoPageUtils;
 import sg.just4fun.tgasdk.web.pay.GoogleBillingUtil;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
 
@@ -261,7 +253,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
-                            String info = TgaSdk.listener.getUserInfo();
+                            String info = TgaSdk.listener.getAuthCode();
                             SpUtils.putString(WebViewGameActivity.this,"userInfo",info);
                             TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
                             try {
