@@ -122,33 +122,33 @@ public class HomeFragment extends MvpFragment implements  TGACallback.ShareCallb
         initWebView(add_view);
         rl_loading.setVisibility(View.VISIBLE);
 
-        String userInfo = TgaSdk.listener.getAuthCode();
-        Log.e("头像","头像="+userInfo);
-        SpUtils.putString(getActivity(),"userInfo",userInfo);
+//        String userInfo = TgaSdk.listener.getAuthCode();
+//        Log.e("头像","头像="+userInfo);
+//        SpUtils.putString(getActivity(),"userInfo",userInfo);
         Gson gson = new Gson();
-        TgaSdkUserInFo tgaSdkUserInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
-        Log.e("头像","头像="+tgaSdkUserInFo.getAvatar()+"  userid="+tgaSdkUserInFo.getUserId()+" 昵称="+tgaSdkUserInFo.getNickname()+" 游戏="+tgaSdkUserInFo.getGameId());
-        if (tgaSdkUserInFo.getUserId()==null||tgaSdkUserInFo.getUserId().equals("")){
-            TgaSdk.listener.quitLogin(getActivity());
-            return;
-        }
+//        TgaSdkUserInFo tgaSdkUserInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
+//        Log.e("头像","头像="+tgaSdkUserInFo.getAvatar()+"  userid="+tgaSdkUserInFo.getUserId()+" 昵称="+tgaSdkUserInFo.getNickname()+" 游戏="+tgaSdkUserInFo.getGameId());
+//        if (tgaSdkUserInFo.getUserId()==null||tgaSdkUserInFo.getUserId().equals("")){
+//            TgaSdk.listener.quitLogin(getActivity());
+//            return;
+//        }
         String version = Conctant.getVersion(getActivity());
         Log.e("啥呀","啥呀="+TgaSdk.gameCentreUrl);
 //        TGA_URL = "https://data.just4fun.sg/h5tga4bip/?txn_id=18&msisdn=456&togameid=56&lang=tr&appversion=3.76";
         if (lin_url==null||lin_url.equals("")){
-            if (tgaSdkUserInFo!=null&&tgaSdkUserInFo.getUserId()!=null){
-                if (tgaSdkUserInFo.getGameId()!=null&&!tgaSdkUserInFo.getGameId().equals("")){
-                    TGA_URL = TgaSdk.gameCentreUrl + "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&"+tgaSdkUserInFo.getGameId()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
-                }else {
-
-                    TGA_URL =TgaSdk.gameCentreUrl + "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
-                }
-            }else {
-                TGA_URL = TgaSdk.gameCentreUrl;
-                if(lang!=null) {
-                    TGA_URL += "?lang=" + urlEncode(lang);
-                }
-            }
+//            if (tgaSdkUserInFo!=null&&tgaSdkUserInFo.getUserId()!=null){
+//                if (tgaSdkUserInFo.getGameId()!=null&&!tgaSdkUserInFo.getGameId().equals("")){
+//                    TGA_URL = TgaSdk.gameCentreUrl + "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&"+tgaSdkUserInFo.getGameId()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
+//                }else {
+//
+//                    TGA_URL =TgaSdk.gameCentreUrl + "?txnId="+tgaSdkUserInFo.getUserId()+"&appId="+ TgaSdk.appId+"&hidebar=1" +"&lang="+lang+"&nickname="+tgaSdkUserInFo.getNickname()+"&msisdn="+tgaSdkUserInFo.getUserId()+"&appversion="+version+"&avatar="+tgaSdkUserInFo.getAvatar();//无底部
+//                }
+//            }else {
+//                TGA_URL = TgaSdk.gameCentreUrl;
+//                if(lang!=null) {
+//                    TGA_URL += "?lang=" + urlEncode(lang);
+//                }
+//            }
         }else {
             TGA_URL= lin_url+"&lang="+lang;
 

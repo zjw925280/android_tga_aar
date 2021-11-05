@@ -34,6 +34,7 @@ import sg.just4fun.tgasdk.tga.base.JsonCallback;
 import sg.just4fun.tgasdk.tga.global.AppUrl;
 import sg.just4fun.tgasdk.tga.global.Global;
 import sg.just4fun.tgasdk.tga.ui.home.HomeActivity;
+import sg.just4fun.tgasdk.tga.ui.home.model.RegisterBean;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.tga.utils.SpUtils;
 //TGASDK初始化类
@@ -188,7 +189,9 @@ public class TgaSdk {
                 if (appConfigList != null && !appConfigList.equals("") && !appConfigList.equals("{}")) {
                     UserInFoBean.AppConfig adConfigBean = gson.fromJson(appConfigList, UserInFoBean.AppConfig.class);
                     try {
+
                         gameCentreUrl = Objects.requireNonNull(requireNotBlankString(adConfigBean.getGameCentreUrl()));
+                   Log.e("游戏列表url","游戏列表url="+gameCentreUrl);
                     } catch (Exception e) {
                         gameCentreUrl = Global.TEST_MOREN;
                     }
@@ -376,6 +379,7 @@ public class TgaSdk {
                                     intent.putExtra("yssdk",0);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     context.startActivity(intent);
+                                return;
                             }else {
 //                                Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 //                                TgaSdkUserInFo userInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
@@ -520,8 +524,6 @@ public class TgaSdk {
                             }else {
                                 gameUserLogin(pkName,resultInfo,gson);
                             }
-
-
                         }else {
                             isSuccess=0;
                             initCallback.initError("TgaEventListener接口为空");

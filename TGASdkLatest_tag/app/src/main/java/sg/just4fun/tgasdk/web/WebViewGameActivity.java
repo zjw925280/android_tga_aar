@@ -436,10 +436,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     public void onBackPressed() {
         Log.e(TGA,"onBackPressed");
         GoogleBillingUtil.cleanListener();
-        if(  TGACallback.fightGameListener!=null){
-
-            TGACallback.fightGameListener.fightGameCall();
-        }
         super.onBackPressed();
     }
 

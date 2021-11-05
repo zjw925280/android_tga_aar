@@ -58,7 +58,7 @@ import sg.just4fun.tgasdk.web.share.ShareUtils;
 public class HomeActivity extends AppCompatActivity implements TGACallback.ShareCallback {
     private static String TGA = "WebViewGameActivity";
     public static LollipopFixedWebView add_view;
-    private String url;
+    private String youxiUrl;
     private int isFrist = 0;
     private LollipopFixedWebView newWebView;
     private String lang1;
@@ -104,7 +104,8 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
 
 //      banner_web = findViewById(R.id.banner_web);
         Intent intent = getIntent();
-        url = intent.getStringExtra("url");
+        youxiUrl = intent.getStringExtra("url");
+        Log.e("游戏url","游戏url="+ youxiUrl);
         yssdk = intent.getIntExtra("yssdk",-1);
         gopag = intent.getIntExtra("gopag", -1);
         statusaBar = intent.getBooleanExtra("statusaBar", true);
@@ -146,29 +147,29 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
             } else {
                 relayout.setVisibility(View.GONE);
             }
-            upWebview(gopag, "", add_view);
+            upWebview(youxiUrl,gopag, "", add_view);
         } else {
             relayout.setVisibility(View.GONE);
             int change = SpUtils.getInt(this, "change", -1);
             if (change == 1) {
                 String string = SpUtils.getString(this, "changelang", "");
-                upWebview(gopag, string, add_view);
+                upWebview(youxiUrl,gopag, string, add_view);
             } else {
                 if (TgaSdk.listener != null) {
                     String lang = TgaSdk.listener.getLang();
                     if (lang == null || lang.trim().equals("")) {
                         String local = Locale.getDefault().toString();
                         lang1 = Conctart.toStdLang(local);
-                        upWebview(gopag, lang1, add_view);
+                        upWebview(youxiUrl,gopag, lang1, add_view);
                     } else {
                         //TODO: 需要开发标准化处理lang。这里暂时假定客户的APP给的已经是标准化的了
                         String s = Conctart.toStdLang(lang);
-                        upWebview(gopag, s, add_view);
+                        upWebview(youxiUrl,gopag, s, add_view);
                     }
                 } else {
                     String local = Locale.getDefault().toString();
                     lang1 = Conctart.toStdLang(local);
-                    upWebview(gopag, lang1, add_view);
+                    upWebview(youxiUrl,gopag, lang1, add_view);
                 }
             }
         }
@@ -241,22 +242,22 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void upWebview(int pag, String lang, WebView webView) {
+    private void upWebview(String url,int pag, String lang, WebView webView) {
         Glide.with(HomeActivity.this).load(R.mipmap.gif)
                 .into(img_loading);
         rl_loading.setVisibility(View.VISIBLE);
         if (TgaSdk.listener != null) {
                             String info = TgaSdk.listener.getAuthCode();
-                            SpUtils.putString(HomeActivity.this, "userInfo", info);
-                            TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
-                            try {
-                                JSONObject jsonObject = new JSONObject(info);
-                                userInFo.fromJson(jsonObject);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+//                            SpUtils.putString(HomeActivity.this, "userInfo", info);
+//                            TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
+//                            try {
+//                                JSONObject jsonObject = new JSONObject(info);
+//                                userInFo.fromJson(jsonObject);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
                             if (pag == 0) {
                                 url = url + "&lang=" + lang;
                             }
@@ -376,7 +377,7 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
                     SpUtils.putInt(HomeActivity.this, "change", change);
                     String s = Conctart.toStdLang(lang);
                     SpUtils.putString(HomeActivity.this, "changelang", s);
-                    upWebview(gopag, s, add_view);
+                    upWebview(youxiUrl,gopag, s, add_view);
                 }
             }
         });
