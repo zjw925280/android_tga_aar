@@ -62,6 +62,7 @@ import sg.just4fun.tgasdk.R;
 import sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils;
 import sg.just4fun.tgasdk.adsdk.TgaApiBean;
 import sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean;
+import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.modle.EncryptStrBean;
 import sg.just4fun.tgasdk.modle.GooglePayInfoBean;
 import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
@@ -419,8 +420,9 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     public void finishPage(String uuid,  String options) {
         Log.e("goPage","关闭");
         GoogleBillingUtil.cleanListener();
-
+        TgaSdk.listener.closeCall();
         context.finish(); //返回键点击
+
     }
     @JavascriptInterface
     public void getPayAppid(String uuid,  String options) {
@@ -595,6 +597,8 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         Log.d("javascriptInterface", "tryFlushEvents " + uuid + " " + options);
         TgaAdSdkUtils.flushAllEvents(webview);
     }
+
+
 //        public void onEvent(String event, JSONObject params) {
 //        webview.evaluateJavascript("tgasdk.nativeEvent(\"" +event + "\", " + params.toString(), null);
 //    }
@@ -628,9 +632,10 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 double i1 =Double.parseDouble(replace)*pow;
                 String replace2 = price1.replace(number, "");
                 try {
+                    Log.e("googlePayWay","list.size()>0="+list.get(0).toString());
                     EncryptStrBean.PriceBean priceBean = new EncryptStrBean.PriceBean(String.valueOf(i1) , String.valueOf(pow), replace2);
-                    price = priceBean.toJson().toString();
                     Log.e("googlePayWay","得到值price1="+list.get(0).toString());
+                    price = priceBean.toJson().toString();
                 } catch (Exception e) {
                     Log.e("googlePayWay","访问服务端="+e.getMessage());
                     e.printStackTrace();
@@ -640,6 +645,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
                 GooglePayWayUtils.googlePayWayEvents(webview,payUuid,"-2");
                 EncryptStrBean encryptStrBean = new EncryptStrBean(orderId,price,0,googlePayWayInFo.getId());
                 try {
+                    Log.e("googlePayWay","list.size()<=0==="+list.get(0).toString());
                     String encryptStr1 = encryptStrBean.toJson().toString();
                     String encryptStr = DesEncryptUtils.encrypt(encryptStr1, TgaSdk.appPaymentKey);
                     googlePayResult(TgaSdk.appId,context,"",encryptStr,"inapp",TgaSdk.appId,0);
@@ -658,6 +664,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
             GooglePayWayUtils.googlePayWayEvents(webview,payUuid,"-2");
             EncryptStrBean encryptStrBean = new EncryptStrBean(orderId,price,0,googlePayWayInFo.getId());
             try {
+                Log.e("googlePayWay","查询失败");
                 String encryptStr1 = encryptStrBean.toJson().toString();
                 String encryptStr = DesEncryptUtils.encrypt(encryptStr1, TgaSdk.appPaymentKey);
                 googlePayResult(TgaSdk.appId,context,"",encryptStr,"inapp",TgaSdk.appId,0);
@@ -674,6 +681,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
             GooglePayWayUtils.googlePayWayEvents(webview,payUuid,"-2");
             EncryptStrBean encryptStrBean = new EncryptStrBean(orderId,price,0,googlePayWayInFo.getId());
             try {
+                Log.e("googlePayWay","onQueryError");
                 String encryptStr1 = encryptStrBean.toJson().toString();
                 String encryptStr = DesEncryptUtils.encrypt(encryptStr1, TgaSdk.appPaymentKey);
                 googlePayResult(TgaSdk.appId,context,"",encryptStr,"inapp",TgaSdk.appId,0);

@@ -9,6 +9,8 @@ public class TGACallback {
     public static ShareCallback listener;
     public static LangCallback langListener;
     public static FightGameCallback fightGameListener;
+    public static CloseCallback closeListener;
+
 
     public interface initCallback {
         void initSucceed();
@@ -31,7 +33,7 @@ public class TGACallback {
         }
 
         String getLang();
-
+        void closeCall();
 
     }
 
@@ -61,5 +63,11 @@ public class TGACallback {
     public static void setFightGameCallback(FightGameCallback fightGameListener) {
         TGACallback.fightGameListener = fightGameListener;
     }
+    public interface CloseCallback {
+        void closeCall();
+    }
 
+    public static void setCloseCallback(CloseCallback closeListener) {
+        TGACallback.closeListener = closeListener;
+    }
 }

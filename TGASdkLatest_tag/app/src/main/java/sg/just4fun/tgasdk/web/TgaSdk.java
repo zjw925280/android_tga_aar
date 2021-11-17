@@ -352,7 +352,7 @@ public class TgaSdk {
         return mContext;
     }
     //进入TGAsdk游戏中心方法
-    public static void goPage(Context context,final String url,boolean autoToken,String schemeQuery) {
+    public static void goPage(Context context,final String url,boolean autoToken,String schemeQuery,boolean navigationbar) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -372,7 +372,8 @@ public class TgaSdk {
                             String userInfo = TgaSdk.listener.getAuthCode();
                             if(userInfo==null||userInfo.equals("")){
                                     Log.e(TGA,"用户信息为空");
-                                    url= TgaSdk.gameCentreUrl+"?appId="+ TgaSdk.appId+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
+//                                "&txnId=1&msisdn=1"+
+                                    url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
                                     Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("url",url);
                                     intent.putExtra("gopag",0);
@@ -388,9 +389,9 @@ public class TgaSdk {
                                     TgaSdk.gameCentreUrl= Global.TEST_MOREN;
                                 }
                                 if (schemeQuery!=null&&!schemeQuery.equals("")){
-                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&"+schemeQuery+"&appId="+ TgaSdk.appId+"&nickname="+bipName+"&msisdn="+bipTxnId+"&token="+bipToken+"&refresh-token="+reBipToken+"&appversion="+version+"&avatar="+bipHeader;//无底部
+                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&"+schemeQuery+"&navigationbar="+navigationbar+"&appId="+ TgaSdk.appId+"&nickname="+bipName+"&msisdn="+bipTxnId+"&token="+bipToken+"&refresh-token="+reBipToken+"&appversion="+version+"&avatar="+bipHeader;//无底部
                                 }else {
-                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&appId="+ TgaSdk.appId+"&nickname="+bipName+"&token="+bipToken+"&refresh-token="+reBipToken+"&msisdn="+bipTxnId+"&appversion="+version+"&avatar="+bipHeader;//无底部
+                                    url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&appId="+ TgaSdk.appId+"&navigationbar="+navigationbar+"&nickname="+bipName+"&token="+bipToken+"&refresh-token="+reBipToken+"&msisdn="+bipTxnId+"&appversion="+version+"&avatar="+bipHeader;//无底部
                                 }
                                 Intent intent = new Intent(context, HomeActivity.class);
                                 intent.putExtra("url",url);
@@ -439,16 +440,16 @@ public class TgaSdk {
         return "";
     }
     //跳转游戏中心
-    public static void goPage(Context context,String url,String gameid) {
-       goPage(context, url, true,gameid);
+    public static void goPage(Context context,String url,String gameid,boolean navigationbar) {
+       goPage(context, url, true,gameid,navigationbar);
     }
     //跳转游戏中心
-    public static void goPage(Context context) {
-        goPage(context, "",true,"");
+    public static void goPage(Context context,boolean navigationbar) {
+        goPage(context, "",true,"",navigationbar);
     }
     //跳转游戏中心
-    public static void goLink(Context context,String url) {
-        goPage(context, url,true,"");
+    public static void goLink(Context context,String url,boolean navigationbar) {
+        goPage(context, url,true,"",navigationbar);
     }
     public static void shareSuccess(String uuid) {
         shared(uuid, true);
@@ -546,16 +547,16 @@ public class TgaSdk {
             }
         });
     }
-   public static void fromScheme(Uri schemeUri){
+   public static void fromScheme(Uri schemeUri,boolean navigationbar){
         if (schemeUri!=null||!schemeUri.equals("")){
             try{
                 String query = schemeUri.getQuery();
-                goPage(mContext, "",true,query);
+                goPage(mContext, "",true,query,navigationbar);
             }catch (Exception e){
                 initCallback.initError("schemeUri存在异常");
             }
         }else {
-            goPage(mContext);
+            goPage(mContext,navigationbar);
         }
    }
 
