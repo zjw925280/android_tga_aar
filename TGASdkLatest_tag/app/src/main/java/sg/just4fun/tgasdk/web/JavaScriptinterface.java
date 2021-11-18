@@ -420,7 +420,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     public void finishPage(String uuid,  String options) {
         Log.e("goPage","关闭");
         GoogleBillingUtil.cleanListener();
-        TgaSdk.listener.onPageClosed();
+        TgaSdk.pageCloseCallbacklistener.onPageClosed();
         context.finish(); //返回键点击
 
     }
