@@ -33,7 +33,7 @@ public class TGACallback {
         }
 
         String getLang();
-        void closeCall();
+        void onPageClosed();
 
     }
 

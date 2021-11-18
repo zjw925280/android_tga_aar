@@ -373,7 +373,7 @@ public class TgaSdk {
                             if(userInfo==null||userInfo.equals("")){
                                     Log.e(TGA,"用户信息为空");
 //                                "&txnId=1&msisdn=1"+
-                                    url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
+                                    url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&txnId=1&msisdn=1"+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
                                     Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("url",url);
                                     intent.putExtra("gopag",0);
@@ -384,7 +384,7 @@ public class TgaSdk {
                             }else {
 //                                Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 //                                TgaSdkUserInFo userInFo = gson.fromJson(userInfo, TgaSdkUserInFo.class);
-                                Log.e(TGA,"游戏中心列表="+TgaSdk.gameCentreUrl);
+                                  Log.e(TGA,"游戏中心列表="+TgaSdk.gameCentreUrl);
                                 if (TgaSdk.gameCentreUrl==null||TgaSdk.gameCentreUrl.equals("")){
                                     TgaSdk.gameCentreUrl= Global.TEST_MOREN;
                                 }
@@ -547,7 +547,7 @@ public class TgaSdk {
             }
         });
     }
-   public static void fromScheme(Uri schemeUri,boolean navigationbar){
+   public static void goPageByScheme(Uri schemeUri,boolean navigationbar){
         if (schemeUri!=null||!schemeUri.equals("")){
             try{
                 String query = schemeUri.getQuery();
