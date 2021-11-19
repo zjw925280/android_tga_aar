@@ -374,7 +374,7 @@ public class TgaSdk {
                             if(userInfo==null||userInfo.equals("")){
                                     Log.e(TGA,"用户信息为空");
 //                                "&txnId=1&msisdn=1"+
-                                    url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&txnId=1&msisdn=1"+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
+                                    url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
                                     Intent intent = new Intent(context, HomeActivity.class);
                                     intent.putExtra("url",url);
                                     intent.putExtra("gopag",0);
