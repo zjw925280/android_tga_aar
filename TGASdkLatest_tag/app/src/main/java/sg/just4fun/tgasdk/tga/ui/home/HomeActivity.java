@@ -412,6 +412,7 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
     public void onBackPressed() {
         Log.e(TGA, "onBackPressed");
         GoogleBillingUtil.cleanListener();
+        TgaSdk.pageCloseCallbacklistener.onPageClosed();
         super.onBackPressed();
     }
     @Override
@@ -426,6 +427,7 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
     @Override
     protected void onStop() {
         super.onStop();
+
     }
 
     @Override

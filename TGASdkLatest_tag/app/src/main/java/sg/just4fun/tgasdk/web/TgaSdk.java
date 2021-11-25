@@ -372,7 +372,7 @@ public class TgaSdk {
                             String url="";
                             String userInfo = TgaSdk.listener.getAuthCode();
                             if(userInfo==null||userInfo.equals("")){
-                                    Log.e(TGA,"用户信息为空");
+                                    Log.e(TGA,"bipToken="+bipToken);
 //                                "&txnId=1&msisdn=1"+
                                     url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
                                     Intent intent = new Intent(context, HomeActivity.class);

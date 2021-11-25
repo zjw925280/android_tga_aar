@@ -298,27 +298,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                             };
                             h5AdsWebViewClient.setDelegateWebViewClient(pubWebViewClient);
                             add_view.setWebViewClient(h5AdsWebViewClient);
-//                            webView.setWebViewClient(new WebViewClient() {
-//                                @Override
-//                                public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                                    super.onPageStarted(view, url, favicon);
-//
-//                                    rl_loading.setVisibility(View.GONE);
-//
-//                                }
-//                                @Override
-//                                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                                    Uri uri = Uri.parse(url);
-//                                    add_view.loadUrl(uri.toString());
-//                                    return false;
-//                                }
-//
-//                                @Override
-//                                public void onPageFinished(WebView webView, String url) {
-//                                    super.onPageFinished(webView, url);
-//                                    Log.e("执行","onPageFinished="+url);
-//                                }
-//                            });
                             webView.setWebChromeClient(new WebChromeClient() {
                                                            @Override
                                                            public void onCloseWindow(WebView window) {
