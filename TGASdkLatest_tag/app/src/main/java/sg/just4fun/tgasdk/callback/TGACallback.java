@@ -9,6 +9,8 @@ public class TGACallback {
     public static ShareCallback listener;
     public static LangCallback langListener;
     public static FightGameCallback fightGameListener;
+    public static CodeCallback codeCallback;
+    public static OutLoginCallback outLoginCallback;
 
 
     public interface initCallback {
@@ -37,7 +39,7 @@ public class TGACallback {
     }
 
 
-    public interface LangCallback {
+    public interface LangCallback {//获取语言回调
         void getLang(String lang);
     }
 
@@ -46,7 +48,7 @@ public class TGACallback {
     }
 
 
-    public interface ShareCallback {
+    public interface ShareCallback {//分享回调
         void shareCall(String uuid, boolean success);
     }
 
@@ -55,15 +57,36 @@ public class TGACallback {
     }
 
 
-    public interface FightGameCallback {
+    public interface FightGameCallback {//对战游戏回调
         void fightGameCall();
     }
 
     public static void setFightGameCallback(FightGameCallback fightGameListener) {
         TGACallback.fightGameListener = fightGameListener;
     }
-    public interface PageCloseCallback {
+
+    public interface PageCloseCallback {//关闭h5页回调
         void onPageClosed();
     }
 
+
+    public interface GoLoginCallback {//调起app登录页
+        void onGoLogin(String uuid);
+    }
+
+
+    public interface CodeCallback {//获取app传过来的code
+        void codeCall(String uuid,String code);
+    }
+    public static void setCodeCallback(CodeCallback codeCallback) {
+        TGACallback.codeCallback = codeCallback;
+    }
+
+
+    public interface OutLoginCallback {//退出登录
+        void outLoginCall();
+    }
+    public static void setOutLoginCallback(OutLoginCallback outLoginCallback) {
+        TGACallback.outLoginCallback = outLoginCallback;
+    }
 }

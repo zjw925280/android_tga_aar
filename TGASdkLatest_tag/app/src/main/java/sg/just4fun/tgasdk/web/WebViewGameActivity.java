@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -31,6 +33,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.h5.H5AdsWebViewClient;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.smarx.notchlib.NotchScreenManager;
 
 import org.json.JSONException;
@@ -39,17 +43,25 @@ import org.json.JSONObject;
 import java.net.URLEncoder;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import sg.just4fun.tgasdk.R;
 import sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils;
 import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.conctart.SdkActivityDele;
+import sg.just4fun.tgasdk.modle.BipGameUserInfo;
+import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
+import sg.just4fun.tgasdk.tga.base.JsonCallback;
+import sg.just4fun.tgasdk.tga.global.AppUrl;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.tga.utils.SpUtils;
 import sg.just4fun.tgasdk.tpsdk.facebook.FacebookTpBean;
+import sg.just4fun.tgasdk.web.login.LoginCallblackInfo;
+import sg.just4fun.tgasdk.web.login.LoginUtils;
 import sg.just4fun.tgasdk.web.pay.GoogleBillingUtil;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
 
-public class WebViewGameActivity extends AppCompatActivity implements TGACallback.ShareCallback{
+public class WebViewGameActivity extends AppCompatActivity implements TGACallback.ShareCallback, TGACallback.CodeCallback {
     public static boolean statusaBar;
     private static String TGA="WebViewGameActivity";
     public static LollipopFixedWebView add_view;
@@ -99,6 +111,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         tv_webtitle = findViewById(R.id.tv_webtitle);
         relayout = findViewById(R.id.relayout);
         tv_stuasbar = findViewById(R.id.tv_stuasbar);
+
 
 //
 //        if (Build.VERSION.SDK_INT >= 11) {
@@ -253,17 +266,17 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                         @Override
                         public void run() {
-                            String info = TgaSdk.listener.getAuthCode();
-                            SpUtils.putString(WebViewGameActivity.this,"userInfo",info);
-                            TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
-                            try {
-                                JSONObject jsonObject = new JSONObject(info);
-                                userInFo.fromJson(jsonObject);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+//                            String info = TgaSdk.listener.getAuthCode();
+//                            SpUtils.putString(WebViewGameActivity.this,"userInfo",info);
+//                            TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
+//                            try {
+//                                JSONObject jsonObject = new JSONObject(info);
+//                                userInFo.fromJson(jsonObject);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
                             if(pag==0){
                                 url=url+"&lang="+lang;
                             }
@@ -354,7 +367,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         webSetting.setUseWideViewPort(true);
         webSetting.setSupportMultipleWindows(true);
         // webSetting.setLoadWithOverviewMode(true);
-        webSetting.setAppCacheEnabled(true);
+        webSetting.setAppCacheEnabled(false);
         // webSetting.setDatabaseEnabled(true);
         webSetting.setDomStorageEnabled(true);
         webSetting.setJavaScriptEnabled(true);
@@ -363,6 +376,9 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         webSetting.setAppCachePath(getDir("appcache", 0).getPath());
         webSetting.setDatabasePath(getDir("databases", 0).getPath());
         webSetting.setGeolocationDatabasePath(getDir("geolocation", 0).getPath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webSetting.setMediaPlaybackRequiresUserGesture(false);//点击之后正常播放音频
+        }
 //        webSetting.en
         webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
         // webSetting.setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);
@@ -394,6 +410,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     protected void onResume() {
         super.onResume();
         TGACallback.setShareCallback(this);
+        TGACallback.setCodeCallback(this);
         if (isFrist>1){
             if(this.add_view != null) {//每次唤醒都要重新注册当前webview到广告控件
                 TgaAdSdkUtils.registerTgaWebview(this.add_view);
@@ -404,11 +421,7 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
 //            GoPageUtils.finishActivityEvents(add_view);
         }
     }
-    @Override
-    public void shareCall(String uuid, boolean success) {
-        Log.e(TGA,"webvigame="+uuid+" 成功=="+success);
-        ShareUtils.shareEvents(add_view,uuid,success);
-    }
+
     //如果下个页面或者上个页面没有使用到googleBuillingUtil.getInstance()，那么就需要在finish或者startActivity之前调用cleanListener()方法，来清除接口。
 //可以尝试这样
     @Override
@@ -422,7 +435,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
     protected void onStop() {
         super.onStop();
         Log.e(TGA,"onStop");
-
         if(TGACallback.fightGameListener!=null){
             TGACallback.fightGameListener.fightGameCall();
         }
@@ -438,5 +450,53 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
         super.onDestroy();
     }
 
+    @Override
+    public void shareCall(String uuid, boolean success) {
+        Log.e(TGA,"webvigame="+uuid+" 成功=="+success);
+        ShareUtils.shareEvents(add_view,uuid,success);
+    }
+    @Override
+    public void codeCall(String uuid,String code) {
+        if (code==null||code.equals("")){
+            LoginUtils.codeEvents(add_view,uuid,false);
+        }else {
+            getUserCodeInfo(this,uuid,code);
+        }
+    }
 
+
+    private void getUserCodeInfo(Context context,String uuid,String code){
+        String  fpId = Settings.System.getString(getContentResolver(), Settings.System.ANDROID_ID);
+        String data="{}";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("fpId",fpId);
+            jsonObject.put("code",code);
+            data = jsonObject.toString();
+            Log.e(TGA,"参数json"+data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, data);
+        OkGo.<HttpBaseResult<BipGameUserInfo>>post(AppUrl.GAME_BIP_CODE_SDK_USER_INFO)
+                .tag(context)
+                .headers("appId",TgaSdk.appId)
+                .upRequestBody(body)
+                .execute(new JsonCallback<HttpBaseResult<BipGameUserInfo>>(context) {
+                    @Override
+                    public void onSuccess(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        if (response.body().getStateCode() == 1) {
+                            BipGameUserInfo resultInfo = response.body().getResultInfo();
+                            LoginUtils.codeEvents(add_view,uuid,true,resultInfo.getAccessToken(),resultInfo.getRefreshToken());
+                            Log.e(TGA,"获取1v1游戏列表token"+response.body().getResultInfo().getAccessToken());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        Log.e(TGA,"获取1v1游戏列表token失败"+response.getException().getMessage());
+                    }
+                });
+    }
 }

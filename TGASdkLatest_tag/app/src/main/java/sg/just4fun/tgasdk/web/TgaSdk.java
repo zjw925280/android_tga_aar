@@ -63,6 +63,7 @@ public class TgaSdk {
     public static String bipToken;
     public static String rebipToken;
     public static TGACallback.PageCloseCallback pageCloseCallbacklistener;
+    public static TGACallback.GoLoginCallback goLoginCallback;
 
     private TgaSdk() {
 
@@ -139,18 +140,7 @@ public class TgaSdk {
             if (listener!=null){
                 String userInfo = listener.getAuthCode();
                 jsonObject.put("code",userInfo);
-//                TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
-//                try {
-//                    JSONObject jsonObject1 = new JSONObject(userInfo);
-//                    userInFo.fromJson(jsonObject1);
-//                    jsonObject.put("txnId",userInFo.getUserId());
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
             }
-//            jsonObject.put("type",13);
             data = jsonObject.toString();
             Log.e(TGA,"参数json"+data);
         } catch (JSONException e) {
@@ -199,15 +189,18 @@ public class TgaSdk {
                     if (adConfigBean != null) {
                         List<UserInFoBean.AdConfigBean> adList = adConfigBean.getAd();
                         if (adList == null || adList.isEmpty()) {
+                            Log.e("tgasdk", "ad配置表isEmpty==" + adList.size());
                             applovnIdConfig = null;
                         } else {
                             Log.e("tgasdk", "ad配置表==" + adList.size());
                             try {
+                                Log.e("tgasdk", "ad配置表applovnIdConfig==" + applovnIdConfig);
                                 applovnIdConfig = adList.get(0).getConfig().toJson().toString();
                             } catch (Exception e2) {
                                 applovnIdConfig = null;
+                                Log.e("tgasdk", "ad配置表Exception==" + adList.size());
                             }
-                            Log.e("tgasdk", "ad配置表==" + applovnIdConfig);
+                            Log.e("tgasdk", "ad配置表adList==" + applovnIdConfig);
                         }
                     }
                 } else {
@@ -281,6 +274,7 @@ public class TgaSdk {
         bipUserid =String.valueOf(response.body().getResultInfo().getUser().getId()) ;
         bipToken = response.body().getResultInfo().getAccessToken();
         rebipToken = response.body().getResultInfo().getRefreshToken();
+        Log.e("rebipToken没有","rebipToken=="+rebipToken);
         BipGameUserInfo.BipGameUserUser user = response.body().getResultInfo().getUser();
         SpUtils.putString(mContext,"bipHeader",user.getHeader());
         SpUtils.putString(mContext,"bipName",user.getName());
@@ -371,7 +365,7 @@ public class TgaSdk {
                             Log.e(TGA,"TgaSdk.listener不为空");
                             String url="";
                             String userInfo = TgaSdk.listener.getAuthCode();
-                            if(userInfo==null||userInfo.equals("")){
+                            if(bipToken==null||bipToken.equals("")){
                                     Log.e(TGA,"bipToken="+bipToken);
 //                                "&txnId=1&msisdn=1"+
                                     url= TgaSdk.gameCentreUrl+"?appId="+TgaSdk.appId+"&navigationbar="+navigationbar+"&token="+bipToken+"&refresh-token="+reBipToken;//无底部
@@ -389,6 +383,7 @@ public class TgaSdk {
                                 if (TgaSdk.gameCentreUrl==null||TgaSdk.gameCentreUrl.equals("")){
                                     TgaSdk.gameCentreUrl= Global.TEST_MOREN;
                                 }
+                                Log.e("rebipToken没有","rebipToken=="+reBipToken);
                                 if (schemeQuery!=null&&!schemeQuery.equals("")){
                                     url= TgaSdk.gameCentreUrl+ "?txnId="+ bipTxnId+"&"+schemeQuery+"&navigationbar="+navigationbar+"&appId="+ TgaSdk.appId+"&nickname="+bipName+"&msisdn="+bipTxnId+"&token="+bipToken+"&refresh-token="+reBipToken+"&appversion="+version+"&avatar="+bipHeader;//无底部
                                 }else {
@@ -445,8 +440,9 @@ public class TgaSdk {
        goPage(context, url, true,gameid,navigationbar);
     }
     //跳转游戏中心
-    public static void goPage(Context context, boolean navigationbar, TGACallback.PageCloseCallback pageCloseCallbacklistener) {
-        TgaSdk.pageCloseCallbacklistener=pageCloseCallbacklistener;
+    public static void goPage(Context context, boolean navigationbar, TGACallback.PageCloseCallback pageCloseCallbacklistene,TGACallback.GoLoginCallback goLoginCallback) {
+        TgaSdk.pageCloseCallbacklistener=pageCloseCallbacklistene;
+        TgaSdk.goLoginCallback=goLoginCallback;
         goPage(context, "",true,"",navigationbar);
     }
     //跳转游戏中心
@@ -462,6 +458,14 @@ public class TgaSdk {
     public static void shared(String uuid, boolean success) {
         TGACallback.listener.shareCall(uuid, success);
     }
+    public static void getCode(String uuid,String code) {
+        TGACallback.codeCallback.codeCall(uuid,code);
+    }
+    public static void outLogin() {
+        TGACallback.outLoginCallback.outLoginCall();
+    }
+
+
     public static void lang(String lang) {
         TGACallback.langListener.getLang(lang);
     }
@@ -558,7 +562,7 @@ public class TgaSdk {
                 initCallback.initError("schemeUri存在异常");
             }
         }else {
-            goPage(mContext,navigationbar,null);
+            goPage(mContext,navigationbar,null,null);
         }
    }
 
@@ -579,4 +583,8 @@ public class TgaSdk {
         }
       return "获取错误";
     }
+
+
+
+
 }

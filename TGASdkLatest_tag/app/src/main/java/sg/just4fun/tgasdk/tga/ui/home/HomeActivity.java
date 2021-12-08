@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -30,6 +32,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.h5.H5AdsWebViewClient;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.model.Response;
 import com.smarx.notchlib.NotchScreenManager;
 
 import org.json.JSONException;
@@ -40,10 +44,16 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import sg.just4fun.tgasdk.R;
 import sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils;
 import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.conctart.SdkActivityDele;
+import sg.just4fun.tgasdk.modle.BipGameUserInfo;
+import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
+import sg.just4fun.tgasdk.tga.base.JsonCallback;
+import sg.just4fun.tgasdk.tga.global.AppUrl;
 import sg.just4fun.tgasdk.tga.ui.home.model.TgaSdkUserInFo;
 import sg.just4fun.tgasdk.tga.utils.SpUtils;
 import sg.just4fun.tgasdk.tpsdk.facebook.FacebookTpBean;
@@ -52,10 +62,11 @@ import sg.just4fun.tgasdk.web.JavaScriptinterface;
 import sg.just4fun.tgasdk.web.LollipopFixedWebView;
 import sg.just4fun.tgasdk.web.TgaSdk;
 import sg.just4fun.tgasdk.web.goPage.GoPageUtils;
+import sg.just4fun.tgasdk.web.login.LoginUtils;
 import sg.just4fun.tgasdk.web.pay.GoogleBillingUtil;
 import sg.just4fun.tgasdk.web.share.ShareUtils;
 
-public class HomeActivity extends AppCompatActivity implements TGACallback.ShareCallback {
+public class HomeActivity extends AppCompatActivity implements TGACallback.ShareCallback , TGACallback.CodeCallback, TGACallback.OutLoginCallback{
     private static String TGA = "WebViewGameActivity";
     public static LollipopFixedWebView add_view;
     private String youxiUrl;
@@ -366,6 +377,8 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
     @Override
     protected void onStart() {
         super.onStart();
+        TGACallback.setCodeCallback(this);
+        TGACallback.setOutLoginCallback(this);
         isFrist++;
         TGACallback.setLangCallback(new TGACallback.LangCallback() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -412,7 +425,10 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
     public void onBackPressed() {
         Log.e(TGA, "onBackPressed");
         GoogleBillingUtil.cleanListener();
-        TgaSdk.pageCloseCallbacklistener.onPageClosed();
+        if(TgaSdk.pageCloseCallbacklistener!=null){
+
+            TgaSdk.pageCloseCallbacklistener.onPageClosed();
+        }
         super.onBackPressed();
     }
     @Override
@@ -427,7 +443,9 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
     @Override
     protected void onStop() {
         super.onStop();
-
+        if (TgaSdk.pageCloseCallbacklistener!=null){
+            TgaSdk.pageCloseCallbacklistener.onPageClosed();
+        }
     }
 
     @Override
@@ -439,5 +457,55 @@ public class HomeActivity extends AppCompatActivity implements TGACallback.Share
             add_view = null;
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void codeCall(String uuid,String code) {
+        if (code==null||code.equals("")){
+            LoginUtils.codeEvents(add_view,uuid,false);
+        }else {
+            getUserCodeInfo(this,uuid,code);
+        }
+    }
+
+    @Override
+    public void outLoginCall() {
+        WebStorage.getInstance().deleteAllData(); //清空WebView的localStorage
+        SpUtils.clean(HomeActivity.this);
+        SdkActivityDele.finishAllActivity();
+    }
+    private void getUserCodeInfo(Context context,String uuid,String code){
+        String  fpId = Settings.System.getString(getContentResolver(), Settings.System.ANDROID_ID);
+        String data="{}";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("fpId",fpId);
+            jsonObject.put("code",code);
+            data = jsonObject.toString();
+            Log.e(TGA,"参数json"+data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, data);
+        OkGo.<HttpBaseResult<BipGameUserInfo>>post(AppUrl.GAME_BIP_CODE_SDK_USER_INFO)
+                .tag(context)
+                .headers("appId",TgaSdk.appId)
+                .upRequestBody(body)
+                .execute(new JsonCallback<HttpBaseResult<BipGameUserInfo>>(context) {
+                    @Override
+                    public void onSuccess(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        if (response.body().getStateCode() == 1) {
+                            BipGameUserInfo resultInfo = response.body().getResultInfo();
+                            LoginUtils.codeEvents(add_view,uuid,true,resultInfo.getAccessToken(),resultInfo.getRefreshToken());
+                            Log.e(TGA,"获取1v1游戏列表token"+response.body().getResultInfo().getAccessToken());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<HttpBaseResult<BipGameUserInfo>> response) {
+                        Log.e(TGA,"获取1v1游戏列表token失败"+response.getException().getMessage());
+                    }
+                });
     }
 }

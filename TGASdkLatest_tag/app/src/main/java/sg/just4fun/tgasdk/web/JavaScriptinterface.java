@@ -420,8 +420,8 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     public void finishPage(String uuid,  String options) {
         Log.e("goPage","关闭");
         GoogleBillingUtil.cleanListener();
-        TgaSdk.pageCloseCallbacklistener.onPageClosed();
         context.finish(); //返回键点击
+
 
     }
     @JavascriptInterface
@@ -468,7 +468,11 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
         Log.e("appPay","options"+options);
     }
 
+    //游客支付回调
+    @JavascriptInterface
+    public void payBacll(String uuid,  String options) {
 
+    }
     @JavascriptInterface
     public void inAppShare(String uuid,  String options) {
         try {
@@ -551,6 +555,15 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     public void releaseAllEvents(String uuid,String options) {
         TgaAdSdkUtils.clearCaches();
     }
+    //调起app端登录界面
+    @JavascriptInterface
+    public void goLogin(String uuid, String options) {
+        Log.e("去登陆","options="+options);
+        if ( TgaSdk.goLoginCallback!=null){
+            TgaSdk.goLoginCallback.onGoLogin(uuid);
+        }
+    }
+
 
     @Override
     public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> list) {
@@ -604,7 +617,7 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
 //    }
     public void googlePayWaypay(String id){
         Log.e("googlePayWay","进来了"+id);
-        googleBillingUtil = GoogleBillingUtil.getInstance(id)
+          googleBillingUtil = GoogleBillingUtil.getInstance(id)
                 .setOnPurchaseFinishedListener(mOnPurchaseFinishedListener)
                 .setOnQueryFinishedListener(mOnQueryFinishedListener)
                 .setOnStartSetupFinishedListener(mOnStartSetupFinishedListener)
@@ -745,7 +758,6 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
             isscu=1;
             //内购或者订阅成功,可以通过purchase.getSku()获取suk进而来判断是哪个商品
             GooglePayWayUtils.googlePayWayEvents(webview,payUuid,"1");
-            Log.e("来啊","老弟");
              ggOrder = list.get(0).getOrderId();
             EncryptStrBean encryptStrBean = new EncryptStrBean(JavaScriptinterface.this.orderId,price,list.get(0).getPurchaseTime(),googlePayWayInFo.getId());
             try {
