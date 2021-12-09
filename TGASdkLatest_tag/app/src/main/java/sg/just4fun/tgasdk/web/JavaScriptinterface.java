@@ -561,8 +561,8 @@ public class JavaScriptinterface implements PurchasesUpdatedListener{
     @JavascriptInterface
     public void goLogin(String uuid, String options) {
         Log.e("去登陆","options="+options);
-        if ( TgaSdk.goLoginCallback!=null){
-            TgaSdk.goLoginCallback.onGoLogin(uuid);
+        if ( TgaSdk.gameCenterCallback!=null){
+            TgaSdk.gameCenterCallback.openUserLogin(uuid);
         }
     }
 

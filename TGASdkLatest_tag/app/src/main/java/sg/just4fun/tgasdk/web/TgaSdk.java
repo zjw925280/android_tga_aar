@@ -67,8 +67,7 @@ public class TgaSdk {
     public static String bipUserid;
     public static String bipToken;
     public static String rebipToken;
-    public static TGACallback.PageCloseCallback pageCloseCallbacklistener;
-    public static TGACallback.GoLoginCallback goLoginCallback;
+    public static TGACallback.GameCenterCallback gameCenterCallback;
 
     private TgaSdk() {
 
@@ -445,9 +444,8 @@ public class TgaSdk {
        goPage(context, url, true,gameid,navigationbar);
     }
     //跳转游戏中心
-    public static void goPage(Context context, boolean navigationbar, TGACallback.PageCloseCallback pageCloseCallbacklistene,TGACallback.GoLoginCallback goLoginCallback) {
-        TgaSdk.pageCloseCallbacklistener=pageCloseCallbacklistene;
-        TgaSdk.goLoginCallback=goLoginCallback;
+    public static void goPage(Context context, boolean navigationbar, TGACallback.GameCenterCallback gameCenterCallback) {
+        TgaSdk.gameCenterCallback=gameCenterCallback;
         goPage(context, "",true,"",navigationbar);
     }
     //跳转游戏中心
@@ -567,7 +565,7 @@ public class TgaSdk {
                 initCallback.initError("schemeUri存在异常");
             }
         }else {
-            goPage(mContext,navigationbar,null,null);
+            goPage(mContext,"",null,navigationbar);
         }
    }
 

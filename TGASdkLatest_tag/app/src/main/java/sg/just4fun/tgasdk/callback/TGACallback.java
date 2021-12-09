@@ -65,13 +65,18 @@ public class TGACallback {
         TGACallback.fightGameListener = fightGameListener;
     }
 
-    public interface PageCloseCallback {//关闭h5页回调
-        void onPageClosed();
+
+    public interface GameCenterCallback{
+        void onGameCenterClosed();//关闭h5页回调
+        void openUserLogin(String uuid);//调起app登录页
     }
 
 
-    public interface GoLoginCallback {//调起app登录页
-        void onGoLogin(String uuid);
+    public interface OutLoginCallback {//退出登录
+        void outLoginCall();
+    }
+    public static void setOutLoginCallback(OutLoginCallback outLoginCallback) {
+        TGACallback.outLoginCallback = outLoginCallback;
     }
 
 
@@ -82,11 +87,4 @@ public class TGACallback {
         TGACallback.codeCallback = codeCallback;
     }
 
-
-    public interface OutLoginCallback {//退出登录
-        void outLoginCall();
-    }
-    public static void setOutLoginCallback(OutLoginCallback outLoginCallback) {
-        TGACallback.outLoginCallback = outLoginCallback;
-    }
 }
