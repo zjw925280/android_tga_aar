@@ -15,12 +15,13 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import sg.just4fun.tgasdk.modle.AdConfigBean;
 import sg.just4fun.tgasdk.modle.UserInFoBean;
 import sg.just4fun.tgasdk.web.TgaSdk;
 
 public class AdConfigUtlis {
 
-    private static List<UserInFoBean.AdConfigBean> appConfigbeanList;
+    private static List<AdConfigBean> appConfigbeanList;
     private static String adConfig;
 
     public static void getBannerConfigEvents(WebView webView, String uuid) {

@@ -55,7 +55,9 @@ import sg.just4fun.tgasdk.adsdk.TgaAdSdkUtils;
 import sg.just4fun.tgasdk.adsdk.TgaApiBean;
 import sg.just4fun.tgasdk.adsdk.applovin.ApplovinApiBean;
 import sg.just4fun.tgasdk.modle.EncryptStrBean;
+import sg.just4fun.tgasdk.modle.GooglePayInfo;
 import sg.just4fun.tgasdk.modle.GooglePayInfoBean;
+import sg.just4fun.tgasdk.modle.PriceBean;
 import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
 import sg.just4fun.tgasdk.tga.base.JsonCallback;
 import sg.just4fun.tgasdk.tga.global.AppUrl;
@@ -93,7 +95,7 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
     private static GooglePayWayInFo googlePayWayInFo;
     private String orderId;
     private String price;
-    private static List<GooglePayInfoBean.GooglePayInfo> infoList=new ArrayList<>();
+    private static List<GooglePayInfo> infoList=new ArrayList<>();
     private static String ggOrder;
     private int isscu=0;
     private int cishu=5;
@@ -418,7 +420,7 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
             if (googlePayWayInFo.getPayType().equals("googlePay")){
                 if(TgaSdk.infoList!=null&&TgaSdk.infoList.size()>0){
                     for (int a=0;a<TgaSdk.infoList.size();a++){
-                        GooglePayInfoBean.GooglePayInfo googlePayInfo = TgaSdk.infoList.get(a);
+                      GooglePayInfo googlePayInfo = TgaSdk.infoList.get(a);
 
                         if (googlePayInfo.getWareId().equals(googlePayWayInFo.getId())){
                             Log.e("googlePayWay","googlePayInfo.getWareId()="+googlePayInfo.getWareId());
@@ -608,7 +610,7 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
                 long i1 = Long.parseLong(replace1)*pow+Long.parseLong(replace);
                 String replace2 = price1.replace(number, "");
                 try {
-                    EncryptStrBean.PriceBean priceBean = new EncryptStrBean.PriceBean(String.valueOf(i1) , String.valueOf(pow), replace2);
+                   PriceBean priceBean = new PriceBean(String.valueOf(i1) , String.valueOf(pow), replace2);
                     price = priceBean.toJson().toString();
                     Log.e("googlePayWay","得到值price1="+list.get(0).toString());
 
@@ -873,7 +875,7 @@ public class MyJavaScripface implements PurchasesUpdatedListener{
                                 return;
                             }
                             for (int a=0;a<infoList.size();a++){
-                                GooglePayInfoBean.GooglePayInfo googlePayInfo = TgaSdk.infoList.get(a);
+                                GooglePayInfo googlePayInfo = TgaSdk.infoList.get(a);
                                 if (googlePayInfo.getWareId().equals(googlePayWayInFo.getId())){
                                     googlePayWaypay(googlePayInfo.getThirdWareId());
                                 }

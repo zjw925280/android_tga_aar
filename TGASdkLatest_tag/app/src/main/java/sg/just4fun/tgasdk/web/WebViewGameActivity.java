@@ -259,13 +259,13 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                 .into(img_loading);
         rl_loading.setVisibility(View.VISIBLE);
         if(TgaSdk.listener!=null){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    runOnUiThread(new Runnable(){
-                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                        @Override
-                        public void run() {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    runOnUiThread(new Runnable(){
+//                        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//                        @Override
+//                        public void run() {
 //                            String info = TgaSdk.listener.getAuthCode();
 //                            SpUtils.putString(WebViewGameActivity.this,"userInfo",info);
 //                            TgaSdkUserInFo userInFo = new TgaSdkUserInFo();
@@ -287,8 +287,10 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
 
                             WebSettings webSetting = add_view.getSettings();
                             webSetting.setJavaScriptEnabled(true);
-                            h5AdsWebViewClient = new H5AdsWebViewClient(WebViewGameActivity.this, webView);
-                            WebViewClient pubWebViewClient=new WebViewClient(){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                h5AdsWebViewClient = new H5AdsWebViewClient(WebViewGameActivity.this, webView);
+            }
+            WebViewClient pubWebViewClient=new WebViewClient(){
                                 @Override
                                 public void onPageStarted(WebView view, String url, Bitmap favicon) {
                                     super.onPageStarted(view, url, favicon);
@@ -309,8 +311,10 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                                     Log.e(TGA,"WebView"+webView+"  url="+url);
                                 }
                             };
-                            h5AdsWebViewClient.setDelegateWebViewClient(pubWebViewClient);
-                            add_view.setWebViewClient(h5AdsWebViewClient);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                h5AdsWebViewClient.setDelegateWebViewClient(pubWebViewClient);
+            }
+            add_view.setWebViewClient(h5AdsWebViewClient);
                             webView.setWebChromeClient(new WebChromeClient() {
                                                            @Override
                                                            public void onCloseWindow(WebView window) {
@@ -346,10 +350,10 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
                         }
                             );
                         }
-                    });
-
-                }
-            }).start();
+//                    });
+//
+//                }
+//            }).start();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//h5谷歌调试
                 webView.setWebContentsDebuggingEnabled(true);
             }
@@ -357,7 +361,6 @@ public class WebViewGameActivity extends AppCompatActivity implements TGACallbac
             tgaBridge.init(webView); //初始化所有需要BRIDGE的SDK
             TgaAdSdkUtils.registerTgaWebview(webView);
         }
-    }
     private void initWebView(WebView webView ) {
         WebSettings webSetting = webView.getSettings();
         webSetting.setAllowFileAccess(true);

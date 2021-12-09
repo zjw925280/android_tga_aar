@@ -25,8 +25,13 @@ import okhttp3.RequestBody;
 import sg.just4fun.tgasdk.R;
 import sg.just4fun.tgasdk.callback.TGACallback;
 import sg.just4fun.tgasdk.conctart.Conctant;
+import sg.just4fun.tgasdk.modle.AdConfigBean;
+import sg.just4fun.tgasdk.modle.AppConfig;
 import sg.just4fun.tgasdk.modle.BipGameUserInfo;
+import sg.just4fun.tgasdk.modle.BipGameUserUser;
 import sg.just4fun.tgasdk.modle.GameListInfoBean;
+import sg.just4fun.tgasdk.modle.GameinfoBean;
+import sg.just4fun.tgasdk.modle.GooglePayInfo;
 import sg.just4fun.tgasdk.modle.GooglePayInfoBean;
 import sg.just4fun.tgasdk.modle.UserInFoBean;
 import sg.just4fun.tgasdk.tga.base.HttpBaseResult;
@@ -41,11 +46,11 @@ import sg.just4fun.tgasdk.tga.utils.SpUtils;
 public class TgaSdk {
     public static Context mContext;
     public static  TGACallback.TgaEventListener listener;
-    public static List<UserInFoBean.AdConfigBean> appConfigbeanList=new ArrayList<UserInFoBean.AdConfigBean>();
+    public static List<AdConfigBean> appConfigbeanList=new ArrayList<AdConfigBean>();
     public static String appKey;
     public static String appId;
     public static String appPaymentKey;
-    public static List<GooglePayInfoBean.GooglePayInfo> infoList=new ArrayList<>();
+    public static List<GooglePayInfo> infoList=new ArrayList<>();
     public static  String appConfigList;
     public static TGACallback.initCallback initCallback;
     public static String applovnIdConfig;
@@ -58,7 +63,7 @@ public class TgaSdk {
     public static String schemeUrl;
     private static String skdjskd;
     private static String lang;
-    public static List<GameListInfoBean.GameinfoBean> gameif=new ArrayList<>();
+    public static List<GameinfoBean> gameif=new ArrayList<>();
     public static String bipUserid;
     public static String bipToken;
     public static String rebipToken;
@@ -178,7 +183,7 @@ public class TgaSdk {
                 iconpath = resultInfo.getIconpath();
                 appConfigList = resultInfo.getAppConfig();
                 if (appConfigList != null && !appConfigList.equals("") && !appConfigList.equals("{}")) {
-                    UserInFoBean.AppConfig adConfigBean = gson.fromJson(appConfigList, UserInFoBean.AppConfig.class);
+                    AppConfig adConfigBean = gson.fromJson(appConfigList, AppConfig.class);
                     try {
 
                         gameCentreUrl = Objects.requireNonNull(requireNotBlankString(adConfigBean.getGameCentreUrl()));
@@ -187,7 +192,7 @@ public class TgaSdk {
                         gameCentreUrl = Global.TEST_MOREN;
                     }
                     if (adConfigBean != null) {
-                        List<UserInFoBean.AdConfigBean> adList = adConfigBean.getAd();
+                        List<AdConfigBean> adList = adConfigBean.getAd();
                         if (adList == null || adList.isEmpty()) {
                             Log.e("tgasdk", "ad配置表isEmpty==" + adList.size());
                             applovnIdConfig = null;
@@ -275,7 +280,7 @@ public class TgaSdk {
         bipToken = response.body().getResultInfo().getAccessToken();
         rebipToken = response.body().getResultInfo().getRefreshToken();
         Log.e("rebipToken没有","rebipToken=="+rebipToken);
-        BipGameUserInfo.BipGameUserUser user = response.body().getResultInfo().getUser();
+       BipGameUserUser user = response.body().getResultInfo().getUser();
         SpUtils.putString(mContext,"bipHeader",user.getHeader());
         SpUtils.putString(mContext,"bipName",user.getName());
         SpUtils.putString(mContext,"bipTxnId",user.getTxnId());
@@ -566,7 +571,7 @@ public class TgaSdk {
         }
    }
 
-    public static List<GameListInfoBean.GameinfoBean> getGameList(){
+    public static List<GameinfoBean> getGameList(){
         Log.e(TGA,"1V1游戏列表数据getGameList="+new Gson().toJson(gameif));
         return gameif;
     }

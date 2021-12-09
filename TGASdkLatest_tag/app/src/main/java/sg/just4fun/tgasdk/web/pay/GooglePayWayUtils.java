@@ -15,19 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sg.just4fun.tgasdk.adsdk.TgaSdkEventDataBean;
+import sg.just4fun.tgasdk.modle.AppConfig;
+import sg.just4fun.tgasdk.modle.PayConfigBean;
 import sg.just4fun.tgasdk.modle.UserInFoBean;
 import sg.just4fun.tgasdk.web.TgaSdk;
 import sg.just4fun.tgasdk.web.banner.AdConfigUtlis;
 
 public class GooglePayWayUtils {
 
-    private static List<UserInFoBean.PayConfigBean> appConfigbeanList=new ArrayList<>();
+    private static List<PayConfigBean> appConfigbeanList=new ArrayList<>();
     private static boolean enabled;
 
     public static void getAppIdEvents(WebView webView, String uuid) {
         Gson gson = new Gson();
 
-        UserInFoBean.AppConfig appConfig = gson.fromJson(TgaSdk.appConfigList, UserInFoBean.AppConfig.class);
+        AppConfig appConfig = gson.fromJson(TgaSdk.appConfigList, AppConfig.class);
         appConfigbeanList = appConfig.getPayMentList();
         if(appConfigbeanList!=null&&!appConfigbeanList.equals("")){
             for (int a=0;a<appConfigbeanList.size();a++){
